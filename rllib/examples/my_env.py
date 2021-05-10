@@ -62,7 +62,6 @@ class ContentCaching(gym.Env):
     """Example of a custom env in which you have to walk down a corridor.
 
     You can configure the length of the corridor via the env config."""
-    
 
    
 
@@ -70,7 +69,7 @@ class ContentCaching(gym.Env):
         self.action_space = Box(low= 0, high= 1 ,shape=(20,), dtype=np.float32)
         self.observation_space = Box(low= 0, high= 100, shape=(20,3), dtype=np.float32)
         # Set the seed. This is only used for the final (reach goal) reward.
-        self.seed(config.worker_index * config.num_workers)
+        #self.seed(config.worker_index * config.num_workers)
 
         self.ttl_var = config["ttl_var"]
         self.variable = config["variable"]
@@ -78,7 +77,6 @@ class ContentCaching(gym.Env):
 
         self.neighbor = config["nei_tab"]
         self.request = config["lst_tab"]
-        
 
         lst = self.request#ret_lst(self.cpt)
 
@@ -158,16 +156,13 @@ class ContentCaching(gym.Env):
         entity_pos = np.array(entity_pos)
         return entity_pos
 
-
-
-
     def reset(self):
         self.epochs_num=0
         entity_pos = self.next_obs(0)
         return entity_pos
 
     def step(self, action):
-        #print("action ============++++++++++++++++++++++++++ ", action)
+
         nei_tab = self.neighbor#ret_nei(self.cpt)
         self.epochs_num= self.epochs_num+1
         i = self.epochs_num
@@ -212,10 +207,6 @@ class ContentCaching(gym.Env):
         for zz in range(len(action)):
             self.cache_on[zz] = min(self.request[i][zz], ((action[zz]*100) * self.caching_cap[zz]) / 100.0)  \
                 + min(self.neigbors_request[zz], (((1-action[zz])*100) * self.caching_cap[zz]) / 100.0)
-
-
-        #return  reward, statistics.mean(unused_shared) , statistics.mean(unused_own), np.mean(unsatisfied_shared), np.mean(unsatisfied_own)
-
         
         if self.epochs_num==19:
             done = True
@@ -223,9 +214,10 @@ class ContentCaching(gym.Env):
             done = False
 
         thisdict = {
-              "brand": "Ford",
-              "model": "Mustang",
-              "year": 1964
+              "unused_shared": np.mean(unused_shared),
+              "unused_own": np.mean(unused_own),
+              "unsatisfied_shared": np.mean(unsatisfied_shared),
+              "unsatisfied_own": np.mean(unsatisfied_own)
             }
         
         return entity_pos,np.mean(reward), done, thisdict

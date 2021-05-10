@@ -85,6 +85,8 @@ parser.add_argument("--stop-reward", type=float, default=0.7)
 parser.add_argument("--no-custom-eval", action="store_true")
 
 
+
+
 def custom_eval_function(trainer, eval_workers):
     """Example of a custom evaluation function.
 
