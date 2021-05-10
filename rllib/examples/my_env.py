@@ -69,11 +69,10 @@ class ContentCaching(gym.Env):
         self.action_space = Box(low= 0, high= 1 ,shape=(20,), dtype=np.float32)
         self.observation_space = Box(low= 0, high= 100, shape=(20,3), dtype=np.float32)
         # Set the seed. This is only used for the final (reach goal) reward.
-        #self.seed(config.worker_index * config.num_workers)
+        self.seed(0)
 
         self.ttl_var = config["ttl_var"]
         self.variable = config["variable"]
-        self.cpt = config["cpt"]
 
         self.neighbor = config["nei_tab"]
         self.request = config["lst_tab"]
@@ -212,6 +211,7 @@ class ContentCaching(gym.Env):
             done = True
         else:
             done = False
+
 
         thisdict = {
               "unused_shared": np.mean(unused_shared),
