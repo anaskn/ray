@@ -68,7 +68,7 @@ def ret_nei(cpt):
 class customExperimentClass():
 
     def __init__(self,ttl_var, cpt, variable, stop_iters=2, fcnet_hidd_lst =[[64, 64, 64]],\
-                                     fcnet_act_lst =  ["relu", "sigmoid"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001):#
+                                     fcnet_act_lst =  ["relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001):#
 
         #fcnet_hidd_lst =[[64, 64, 64]]
         #fcnet_act_lst =  ["relu", "sigmoid"]
@@ -238,7 +238,7 @@ if __name__ == "__main__":
 
 
     ray.shutdown()
-    ray.init()#num_cpus=3)#num_cpus=2, num_gpus=0)
+    ray.init( num_cpus=1, num_gpus=1)#num_cpus=3)#num_cpus=2, num_gpus=0)
 
     args = parser.parse_args()
     # Class instance

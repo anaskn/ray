@@ -14,13 +14,13 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--run", type=str, default="ppo")	
-	parser.add_argument("--epochs", type=int, default= 3)#50)
+	parser.add_argument("--epochs", type=int, default= 50)#50)
 	parser.add_argument("--stop-timesteps", type=int, default=90000000)
 	parser.add_argument("--stop-reward", type=float, default=0.001)
 	parser.add_argument("--para", type=str, default="rc")
 	parser.add_argument("--ttl_var", type=int, default=3)
-	parser.add_argument("--cpu", type=int, default= 3)
-	parser.add_argument("--gpu", type=int, default= 0)
+	parser.add_argument("--cpu", type=int, default= 0)
+	parser.add_argument("--gpu", type=int, default= 1)
 	parser.add_argument("--lr", nargs="+", default=[1e-2])
 	parser.add_argument("--activation", nargs="+", default= ["relu"])
 	parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
-	ray.init()#num_cpus=args.cpu, num_gpus=args.gpu)
+	ray.init(num_cpus=args.cpu, num_gpus=args.gpu)
 
 	for x in range(len(variable)):
 
