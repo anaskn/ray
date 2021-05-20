@@ -15,10 +15,14 @@ from ray.rllib.policy.policy import LEARNER_STATS_KEY
 from ray.rllib.policy.sample_batch import DEFAULT_POLICY_ID
 from ray.rllib.utils.framework import try_import_tf
 
+from my_env import ContentCaching
+from customclass import customExperimentClass
+
+
 tf1, tf, tfv = try_import_tf()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--run", type=str, default="DQN")  # Try PG, PPO, DQN
+parser.add_argument("--run", type=str, default="APPO")  # Try PG, PPO, DQN
 parser.add_argument("--stop", type=int, default=200)
 parser.add_argument("--use-vision-network", action="store_true")
 parser.add_argument("--num-cpus", type=int, default=0)
@@ -98,11 +102,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     ray.init(num_cpus=args.num_cpus or None)
     ModelCatalog.register_custom_model(
-        "keras_model", MyVisionNetwork
-        if args.use_vision_network else MyKerasModel)
+        "keras_model", MyKerasModel)
     ModelCatalog.register_custom_model(
-        "keras_q_model", MyVisionNetwork
-        if args.use_vision_network else MyKerasQModel)
+        "keras_q_model", MyKerasQModel)
 
     # Tests https://github.com/ray-project/ray/issues/7293
     def check_has_custom_metric(result):
@@ -123,7 +125,7 @@ if __name__ == "__main__":
         config=dict(
             extra_config,
             **{
-                "env": "BreakoutNoFrameskip-v4"
+                env: ContentCaching
                 if args.use_vision_network else "CartPole-v0",
                 # Use GPUs iff `RLLIB_NUM_GPUS` env var set to > 0.
                 "num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),

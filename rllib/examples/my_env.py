@@ -13,7 +13,8 @@ from gym.spaces import Discrete, Box
 import numpy as np
 import os
 import random
-
+from ray.rllib.agents.dqn.distributional_q_tf_model import \
+    DistributionalQTFModel
 import ray
 from ray import tune
 from ray.tune import grid_search
@@ -29,19 +30,6 @@ import pickle
 
 tf1, tf, tfv = try_import_tf()
 torch, nn = try_import_torch()
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--run", type=str, default="PPO")
-parser.add_argument("--torch", action="store_true")
-parser.add_argument("--as-test", action="store_true")
-parser.add_argument("--stop-iters", type=int, default= 20)#50)
-parser.add_argument("--stop-timesteps", type=int, default=100000)
-parser.add_argument("--stop-reward", type=float, default=0.1)
-
-parser.add_argument("--ttl_var", type=int, default=3)
-
-
-
 
 def ret_lst(cpt):
     string1 =  'data/listfile_evol'+str(cpt)+'.data' #_evol'+ , _pos'+
@@ -77,6 +65,8 @@ class ContentCaching(gym.Env):
         self.neighbor = config["nei_tab"]
         self.request = config["lst_tab"]
 
+        self.reward_cumul = []
+
         lst = self.request#ret_lst(self.cpt)
 
         tab_cache= []
@@ -106,8 +96,13 @@ class ContentCaching(gym.Env):
         self.unsatisfied_own= None
 
         self.epochs_num=0
+        self.steps = 0
 
     def next_obs(self,i):
+        
+        #if i == 3:
+            #self.steps = self.steps+1
+            #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx == ", self.steps)
         nei_tab = self.neighbor#ret_nei(self.cpt)# args must be variable
         ttl_var = self.ttl_var # must be variable
         
@@ -219,6 +214,7 @@ class ContentCaching(gym.Env):
               "unsatisfied_shared": np.mean(unsatisfied_shared),
               "unsatisfied_own": np.mean(unsatisfied_own)
             }
+        #self.reward_cumul=
         
         return entity_pos,np.mean(reward), done, thisdict
 
@@ -264,41 +260,156 @@ class TorchCustomModel(TorchModelV2, nn.Module):
         return torch.reshape(self.torch_sub_model.value_function(), [-1])
 
 
+class MyKerasModel(TFModelV2):
+    """Custom model for policy gradient algorithms."""
+
+    def __init__(self, obs_space, action_space, num_outputs, model_config,
+                 name):
+        super(MyKerasModel, self).__init__(obs_space, action_space,
+                                           num_outputs, model_config, name)
+        self.inputs = tf.keras.layers.Input(
+            shape=obs_space.shape, name="observations")
+        layer_1 = tf.keras.layers.Dense(
+            128,
+            name="my_layer1",
+            activation=tf.nn.relu,
+            kernel_initializer=normc_initializer(1.0))(self.inputs)
+        layer_out = tf.keras.layers.Dense(
+            num_outputs,
+            name="my_out",
+            activation=None,
+            kernel_initializer=normc_initializer(0.01))(layer_1)
+        value_out = tf.keras.layers.Dense(
+            1,
+            name="value_out",
+            activation=None,
+            kernel_initializer=normc_initializer(0.01))(layer_1)
+        self.base_model = tf.keras.Model(self.inputs, [layer_out, value_out])
+
+    def forward(self, input_dict, state, seq_lens):
+        model_out, self._value_out = self.base_model(input_dict["obs"])
+        return model_out, state
+
+    def value_function(self):
+        return tf.reshape(self._value_out, [-1])
+
+    def metrics(self):
+        return {"foo": tf.constant(42.0)}
+
+
+class MyKerasQModel(DistributionalQTFModel):
+    """Custom model for DQN."""
+
+    def __init__(self, obs_space, action_space, num_outputs, model_config,
+                 name, **kw):
+        super(MyKerasQModel, self).__init__(
+            obs_space, action_space, num_outputs, model_config, name, **kw)
+
+        # Define the core model layers which will be used by the other
+        # output heads of DistributionalQModel
+        self.inputs = tf.keras.layers.Input(
+            shape=obs_space.shape, name="observations")
+        layer_1 = tf.keras.layers.Dense(
+            128,
+            name="my_layer1",
+            activation=tf.nn.relu,
+            kernel_initializer=normc_initializer(1.0))(self.inputs)
+        layer_out = tf.keras.layers.Dense(
+            num_outputs,
+            name="my_out",
+            activation=tf.nn.relu,
+            kernel_initializer=normc_initializer(1.0))(layer_1)
+        self.base_model = tf.keras.Model(self.inputs, layer_out)
+
+    # Implement the core forward method.
+    def forward(self, input_dict, state, seq_lens):
+        model_out = self.base_model(input_dict["obs"])
+        return model_out, state
+
+    def metrics(self):
+        return {"foo": tf.constant(42.0)}
+
+
+
 if __name__ == "__main__":
+
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run", type=str, default="PPO")
+    parser.add_argument("--torch", action="store_true")
+    parser.add_argument("--as-test", action="store_true")
+    parser.add_argument("--stop-iters", type=int, default= 20)#50)
+    parser.add_argument("--stop-timesteps", type=int, default=100000)
+    parser.add_argument("--stop-reward", type=float, default=0.1)
+    parser.add_argument("--ttl_var", type=int, default=3)
+
     args = parser.parse_args()
     ray.init()
 
     # Can also register the env creator function explicitly with:
     # register_env("corridor", lambda config: SimpleCorridor(config))
-    ModelCatalog.register_custom_model(
-        "my_model", TorchCustomModel if args.torch else CustomModel)
+    #ModelCatalog.register_custom_model(
+     #   "my_model", TorchCustomModel if args.torch else CustomModel)
+
+    #ModelCatalog.register_custom_model(
+     #   "keras_model", MyKerasModel)
+    #ModelCatalog.register_custom_model(
+     #   "keras_q_model", MyKerasQModel)
 
     config = {
         "env": ContentCaching,  # or "corridor" if registered above
         "env_config": {
             "ttl_var": args.ttl_var,
-            "cpt": 1,
             "variable": [8,8,8,4],
             "nei_tab": ret_nei(1),
             "lst_tab": ret_lst(1),
-
+                   
         },
         # Use GPUs iff `RLLIB_NUM_GPUS` env var set to > 0.
         "num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),
+
+        #"model": {
+            #"custom_model": "my_model",
+        #    "custom_model": "keras_q_model",
+        #    "vf_share_layers": True,
+        #},
+
         "model": {
-            "custom_model": "my_model",
+            # By default, the MODEL_DEFAULTS dict above will be used.
+
+            # Change individual keys in that dict by overriding them, e.g.
+            "fcnet_hiddens": grid_search([[128, 128, 128], [64, 64, 64]]),
+            "fcnet_activation": grid_search(["sigmoid", "relu"]),
             "vf_share_layers": True,
         },
+
         "lr": grid_search([1e-2, 1e-4, 1e-6]),  # try different lrs
         "num_workers": 2,  # parallelism
         "framework": "torch" if args.torch else "tf",
     }
+
+    """
+    algo_config = {
+        # All model-related settings go into this sub-dict.
+        "model": {
+            # By default, the MODEL_DEFAULTS dict above will be used.
+
+            # Change individual keys in that dict by overriding them, e.g.
+            "fcnet_hiddens": [128, 128, 128],
+            "fcnet_activation": "sigmoid",
+        },
+
+
+    }
+
+    """
 
     stop = {
         "training_iteration": args.stop_iters,
         "timesteps_total": args.stop_timesteps,
         "episode_reward_mean": args.stop_reward,
     }
+
 
     results = tune.run(args.run, config=config, stop=stop)
     
