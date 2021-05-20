@@ -82,7 +82,8 @@ class customExperimentClass():
                         "nei_tab": ret_nei(cpt),
                         "lst_tab": ret_lst(cpt),
                         },
-                        #"num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),
+                        "num_gpus": 1,#int(os.environ.get("RLLIB_NUM_GPUS", "0")),
+                        "framework": "torch",
 
                         "model": {
                             # By default, the MODEL_DEFAULTS dict above will be used.
@@ -237,13 +238,13 @@ if __name__ == "__main__":
 
 
     ray.shutdown()
-    ray.init(num_cpus=3)#num_cpus=2, num_gpus=0)
+    ray.init()#num_cpus=3)#num_cpus=2, num_gpus=0)
 
     args = parser.parse_args()
     # Class instance
 
     #print("num gpu = ",int(os.environ.get("RLLIB_NUM_GPUS", "1")) )
-    """
+    
     exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,8,4], args.epochs) # ttl_var, cpt, variable
 
     # Train and save for 2 iterations
@@ -257,7 +258,7 @@ if __name__ == "__main__":
     # Load saved
     #exper.load(checkpoint_path)
     # Test loaded
-    """
+    
     """
     reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo,checkpoint_path, lr, fc_hid, fc_act)
    
