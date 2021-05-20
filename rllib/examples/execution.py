@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
-	ray.init(num_cpus=args.cpu, num_gpus=args.gpu)
+	ray.init()#num_cpus=args.cpu, num_gpus=args.gpu)
 
 	for x in range(len(variable)):
 

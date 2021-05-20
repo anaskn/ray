@@ -95,7 +95,8 @@ class customExperimentClass():
                         },
                         
                         "lr": grid_search(lr_lst),  # try different lrs
-                        "num_workers": 2,  # parallelism
+                        "num_workers": 4,  # parallelism
+                        "seed" : 0
                         #"framework": "torch" if args.torch else "tf",
         }
 
@@ -240,6 +241,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     # Class instance
+
+    #print("num gpu = ",int(os.environ.get("RLLIB_NUM_GPUS", "1")) )
+    """
     exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,8,4], args.epochs) # ttl_var, cpt, variable
 
     # Train and save for 2 iterations
@@ -253,6 +257,7 @@ if __name__ == "__main__":
     # Load saved
     #exper.load(checkpoint_path)
     # Test loaded
+    """
     """
     reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo,checkpoint_path, lr, fc_hid, fc_act)
    
