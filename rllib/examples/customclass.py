@@ -82,7 +82,7 @@ class customExperimentClass():
                         "nei_tab": ret_nei(cpt),
                         "lst_tab": ret_lst(cpt),
                         },
-                        "num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),
+                        #"num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),
 
                         "model": {
                             # By default, the MODEL_DEFAULTS dict above will be used.
