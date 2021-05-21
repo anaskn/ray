@@ -48,7 +48,7 @@ def the_plot(analysis):
     plt.legend()
     
     # save file .pdf
-    plt.savefig('plot/Reward_'+args.algo+'.pdf') #relusigmoid
+    plt.savefig('plot/Reward_'+args.algo+'.pdf')
     plt.show()
 
 def ret_lst(cpt):
@@ -67,7 +67,7 @@ def ret_nei(cpt):
 
 class customExperimentClass():
 
-    def __init__(self,ttl_var, cpt, variable, stop_iters=2, fcnet_hidd_lst =[[64, 64, 64]],\
+    def __init__(self,ttl_var, cpt, variable, stop_iters=5, fcnet_hidd_lst =[[64, 64, 64]],\
                                      fcnet_act_lst =  ["relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001):#
 
         #fcnet_hidd_lst =[[64, 64, 64]]
@@ -82,8 +82,8 @@ class customExperimentClass():
                         "nei_tab": ret_nei(cpt),
                         "lst_tab": ret_lst(cpt),
                         },
-                        "num_gpus": 1,#int(os.environ.get("RLLIB_NUM_GPUS", "0")),
-                        "framework": "torch",
+                        #"num_gpus": 1,#int(os.environ.get("RLLIB_NUM_GPUS", "0")),
+                        
 
                         "model": {
                             # By default, the MODEL_DEFAULTS dict above will be used.
@@ -94,11 +94,12 @@ class customExperimentClass():
                             "fcnet_activation": grid_search(fcnet_act_lst),
                             "vf_share_layers": False,#True,
                         },
+                        "framework": "torch",# if args.torch else "tf",
                         
                         "lr": grid_search(lr_lst),  # try different lrs
                         "num_workers": 4,  # parallelism
-                        "seed" : 0
-                        #"framework": "torch" if args.torch else "tf",
+                        "seed" : 0,
+                        
         }
 
         
@@ -116,13 +117,14 @@ class customExperimentClass():
 
                             # Change individual keys in that dict by overriding them, e.g.
                             "fcnet_hiddens": [64, 64, 64],
-                            "fcnet_activation": "sigmoid",
+                            "fcnet_activation": "relu",
                             "vf_share_layers": False,#True,
                         },
 
                         "lr": [1e-2],  # try different lrs
                         #"num_workers": 2,  # parallelism
-                        #"framework": "torch" if args.torch else "tf",
+                        "framework": "torch",# if args.torch else "tf",
+                        "seed" : 0,
         }
         self.save_dir = "~/ray_results"
         self.stop_criteria = {
@@ -219,7 +221,7 @@ class customExperimentClass():
             unused_own.append(info["unused_own"])
             unsatisfied_shared.append(info["unsatisfied_shared"])
             unsatisfied_own.append(info["unsatisfied_own"])
-
+        
         return episode_reward, unused_shared, unused_own, unsatisfied_shared, unsatisfied_own
 
 
@@ -234,11 +236,11 @@ if __name__ == "__main__":
     parser.add_argument("--stop-reward", type=float, default=0.001)
     parser.add_argument("--ttl_var", type=float, default=3)
     parser.add_argument("--cpt", type=float, default=1)
-    parser.add_argument("--algo", type=str, default="ppo")   
+    parser.add_argument("--algo", type=str, default="ppo") 
 
 
     ray.shutdown()
-    ray.init( num_cpus=1, num_gpus=1)#num_cpus=3)#num_cpus=2, num_gpus=0)
+    ray.init( num_cpus=8, num_gpus=0)#num_cpus=3)#num_cpus=2, num_gpus=0)
 
     args = parser.parse_args()
     # Class instance
@@ -249,7 +251,7 @@ if __name__ == "__main__":
 
     # Train and save for 2 iterations
     checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.algo)
-    the_plot(results)
+    #the_plot(results)
     
     print("------------------------------------------------------------------------------------")
     print("------------------------------------------------------------------------------------")
@@ -259,7 +261,7 @@ if __name__ == "__main__":
     #exper.load(checkpoint_path)
     # Test loaded
     
-    """
+    
     reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo,checkpoint_path, lr, fc_hid, fc_act)
    
     print(" info[unused_shared] = ", unused_shared )
@@ -267,7 +269,8 @@ if __name__ == "__main__":
     print(" info[unsatisfied_shared] = ", unsatisfied_shared )
     print(" info[unsatisfied_own] = ", unsatisfied_own )
     print(" reward = ", reward )
-    """
+
+    #"""
     
     
 
@@ -291,5 +294,16 @@ if __name__ == "__main__":
             },
             "framework": "tf",
         })
+
+
+
+print("------------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------------")
+        print("self.config_train[framework] = ", self.config_train["framework"])
+        #print("args.torch = ", args.torch)
 
 """

@@ -19,9 +19,9 @@ if __name__ == "__main__":
 	parser.add_argument("--stop-reward", type=float, default=0.001)
 	parser.add_argument("--para", type=str, default="rc")
 	parser.add_argument("--ttl_var", type=int, default=3)
-	parser.add_argument("--cpu", type=int, default= 0)
-	parser.add_argument("--gpu", type=int, default= 1)
-	parser.add_argument("--lr", nargs="+", default=[1e-2])
+	parser.add_argument("--cpu", type=int, default= 8)
+	parser.add_argument("--gpu", type=int, default= 0)
+	parser.add_argument("--lr", type=float, nargs="+", default=[1e-2])
 	parser.add_argument("--activation", nargs="+", default= ["relu"])
 	parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/unused_'+pdf_plot[para]+'_'+args.run+'.pdf') #relusigmoid
+	plt.savefig('plot/unused_'+pdf_plot[para]+'_'+args.run+'.pdf') 
 
 	#to stock data 
 	our_file = [algo_unused_shared,algo_unused_own]
@@ -135,8 +135,7 @@ if __name__ == "__main__":
 	
 	# save file .pdf
 	#"""
-	plt.savefig('plot/unsatisfied_'+pdf_plot[para]+'_'+args.run+'.pdf') #relusigmoid
-
+	plt.savefig('plot/unsatisfied_'+pdf_plot[para]+'_'+args.run+'.pdf')
 	#to stock data 
 	our_file = [algo_unsatisfied_shared, algo_unsatisfied_own]#,algo_unsatisfied_shared[1],algo_unsatisfied_own[1]]#, algo_unused_shared_cut[1], algo_unused_own_cut[1], algo_unused_shared_cut[2], algo_unused_own_cut[2]]
 	with open('model/unsatisfied_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
