@@ -29,7 +29,7 @@ from ray.rllib.utils.test_utils import check_learning_achieved
 import pickle
 
 import torch
-torch.set_deterministic()
+torch.set_deterministic(True)
 
 
 tf1, tf, tfv = try_import_tf()

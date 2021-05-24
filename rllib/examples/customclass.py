@@ -5,7 +5,7 @@ from ray import tune
 from ray.rllib.agents import ppo
 from ray.rllib.agents import ddpg
 from ray.rllib.agents import a3c
-
+import ray.rllib.agents.impala as impala
 
 
 from ray.tune import grid_search
@@ -68,7 +68,7 @@ def ret_nei(cpt):
 class customExperimentClass():
 
     def __init__(self,ttl_var, cpt, variable, stop_iters=5, fcnet_hidd_lst =[[64, 64, 64]],\
-                                     fcnet_act_lst =  ["relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001):#
+                                     fcnet_act_lst =  ["relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
 
         #fcnet_hidd_lst =[[64, 64, 64]]
         #fcnet_act_lst =  ["relu", "sigmoid"]
@@ -78,28 +78,21 @@ class customExperimentClass():
                         "env": ContentCaching,
                         "env_config": {
                         "ttl_var": ttl_var,
-                        "variable": variable,#[8,8,8,4],
+                        "variable": variable,
                         "nei_tab": ret_nei(cpt),
                         "lst_tab": ret_lst(cpt),
                         },
-                        #"num_gpus": 1,#int(os.environ.get("RLLIB_NUM_GPUS", "0")),
-                        
-
+                        "num_gpus": num_gpus,
+						"num_gpus_per_worker": num_gpus_per_worker,
                         "model": {
-                            # By default, the MODEL_DEFAULTS dict above will be used.
-
-                            # Change individual keys in that dict by overriding them, e.g.
-                            
                             "fcnet_hiddens": grid_search( fcnet_hidd_lst),
                             "fcnet_activation": grid_search(fcnet_act_lst),
                             "vf_share_layers": False,#True,
                         },
                         "framework": "torch",# if args.torch else "tf",
-                        
                         "lr": grid_search(lr_lst),  # try different lrs
-                        "num_workers": 4,  # parallelism
+                        "num_workers": num_workers, # parallelism
                         "seed" : 0,
-                        
         }
 
         
@@ -113,14 +106,13 @@ class customExperimentClass():
 
                         },
                         "model": {
-                            # By default, the MODEL_DEFAULTS dict above will be used.
-
-                            # Change individual keys in that dict by overriding them, e.g.
                             "fcnet_hiddens": [64, 64, 64],
                             "fcnet_activation": "relu",
                             "vf_share_layers": False,#True,
                         },
-
+                        "num_gpus": num_gpus,
+						"num_gpus_per_worker": num_gpus_per_worker,
+                        "num_workers": num_workers, # parallelism
                         "lr": [1e-2],  # try different lrs
                         #"num_workers": 2,  # parallelism
                         "framework": "torch",# if args.torch else "tf",
@@ -143,14 +135,11 @@ class customExperimentClass():
         if algo == "ppo":
             analysis = ray.tune.run(ppo.PPOTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
                                checkpoint_at_end=True)
-        if algo == "ddpg":
-            analysis = ray.tune.run(ddpg.DDPGTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
+        if algo == "impala":
+            analysis = ray.tune.run(impala.ImpalaTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
         if algo == "a3c":
             analysis = ray.tune.run(a3c.A3CTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
-                                checkpoint_at_end=True)
-        if algo == "td3":
-            analysis = ray.tune.run(ddpg.TD3Trainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
         if algo == "appo":
             analysis = ray.tune.run(ppo.APPOTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
@@ -200,8 +189,8 @@ class customExperimentClass():
             self.agent = ddpg.DDPGTrainer(config=self.config_test)
         if algo == "a3c":
             self.agent = a3c.A3CTrainer(config=self.config_test)
-        if algo == "td3":
-            self.agent = ddpg.TD3Trainer(config=self.config_test)
+        if algo == "impala":
+            self.agent = impala.ImpalaTrainer(config=self.config_test)
         if algo == "appo":
             self.agent = ppo.APPOTrainer(config=self.config_test)
 
@@ -240,7 +229,7 @@ if __name__ == "__main__":
 
 
     ray.shutdown()
-    ray.init( num_cpus=8, num_gpus=0)#num_cpus=3)#num_cpus=2, num_gpus=0)
+    ray.init()
 
     args = parser.parse_args()
     # Class instance
@@ -251,14 +240,14 @@ if __name__ == "__main__":
 
     # Train and save for 2 iterations
     checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.algo)
-    #the_plot(results)
+    the_plot(results)
     
     print("------------------------------------------------------------------------------------")
     print("------------------------------------------------------------------------------------")
     print("------------------------------------------------------------------------------------")
     
     # Load saved
-    #exper.load(checkpoint_path)
+    exper.load(checkpoint_path)
     # Test loaded
     
     
@@ -269,41 +258,4 @@ if __name__ == "__main__":
     print(" info[unsatisfied_shared] = ", unsatisfied_shared )
     print(" info[unsatisfied_own] = ", unsatisfied_own )
     print(" reward = ", reward )
-
-    #"""
     
-    
-
-"""
-
- 
-
-    config=dict(
-        extra_config,
-        **{
-            "env": "BreakoutNoFrameskip-v4"
-            if args.use_vision_network else "CartPole-v0",
-            # Use GPUs iff `RLLIB_NUM_GPUS` env var set to > 0.
-            "num_gpus": int(os.environ.get("RLLIB_NUM_GPUS", "0")),
-            "callbacks": {
-                "on_train_result": check_has_custom_metric,
-            },
-            "model": {
-                "custom_model": "keras_q_model"
-                if args.run == "DQN" else "keras_model"
-            },
-            "framework": "tf",
-        })
-
-
-
-print("------------------------------------------------------------------------------------")
-        print("------------------------------------------------------------------------------------")
-        print("------------------------------------------------------------------------------------")
-        print("------------------------------------------------------------------------------------")
-        print("------------------------------------------------------------------------------------")
-        print("------------------------------------------------------------------------------------")
-        print("self.config_train[framework] = ", self.config_train["framework"])
-        #print("args.torch = ", args.torch)
-
-"""

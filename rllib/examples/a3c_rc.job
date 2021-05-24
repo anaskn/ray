@@ -1,0 +1,16 @@
+#!/bin/sh
+#SBATCH --job-name=a3crc
+#SBATCH -p gpu
+#SBATCH --gres=gpu:1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=20
+#SBATCH --gpus-per-task=1
+#SBATCH -C V100
+#SBATCH --gres-flags=enforce-binding
+
+FS='
+'
+export RLLIB_NUM_GPUS=1
+cd /home/akoulali/experiments/ray/rllib/examples
+srun --ntasks=1 python3 execution.py --run a3c --ttl_var 3 --para rc --lr 1e-4 1e-2 --activation "relu" "swish" -l 64 64 64 -l 128 128 128 --epochs 2 --gpu 0.2 --num_workers 1 --num_gpus_per_worker 0.1
+

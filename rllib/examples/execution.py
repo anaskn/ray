@@ -20,10 +20,12 @@ if __name__ == "__main__":
 	parser.add_argument("--para", type=str, default="rc")
 	parser.add_argument("--ttl_var", type=int, default=3)
 	parser.add_argument("--cpu", type=int, default= 8)
-	parser.add_argument("--gpu", type=int, default= 0)
+	parser.add_argument("--gpu", type=float, default= 0)
 	parser.add_argument("--lr", type=float, nargs="+", default=[1e-2])
 	parser.add_argument("--activation", nargs="+", default= ["relu"])
 	parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
+	parser.add_argument("--num_gpus_per_worker", type=float, default= 0)
+	parser.add_argument("--num_workers", type=int, default= 0)
 
 	args = parser.parse_args()
 
@@ -51,8 +53,7 @@ if __name__ == "__main__":
 	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
-	ray.init(num_cpus=args.cpu, num_gpus=args.gpu)
-
+	ray.init()
 	for x in range(len(variable)):
 
 		parameters[para][para]= variable[x]
@@ -69,7 +70,7 @@ if __name__ == "__main__":
 
 			# Class instance
 			exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
-										fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs) 
+										fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 
 									
 			checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 			# Load saved and Test loaded

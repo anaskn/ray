@@ -1,0 +1,71 @@
+Failure # 1 (occurred at 2021-05-22_14-26-32)
+Traceback (most recent call last):
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/tune/trial_runner.py", line 718, in _process_trial
+    results = self.trial_executor.fetch_result(trial)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/tune/ray_trial_executor.py", line 688, in fetch_result
+    result = ray.get(trial_future[0], timeout=DEFAULT_GET_TIMEOUT)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/_private/client_mode_hook.py", line 62, in wrapper
+    return func(*args, **kwargs)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/worker.py", line 1484, in get
+    raise value
+ray.exceptions.RayActorError: The actor died because of an error raised in its creation task, [36mray::TD3.__init__()[39m (pid=146823, ip=172.16.1.17)
+  File "python/ray/_raylet.pyx", line 500, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 450, in ray._raylet.execute_task.function_executor
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/_private/function_manager.py", line 566, in actor_method_executor
+    return method(__ray_actor, *args, **kwargs)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 123, in __init__
+    Trainer.__init__(self, config, env, logger_creator)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 548, in __init__
+    super().__init__(config, logger_creator)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/tune/trainable.py", line 98, in __init__
+    self.setup(copy.deepcopy(self.config))
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 709, in setup
+    self._init(self.config, self.env_creator)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/trainer_template.py", line 155, in _init
+    num_workers=self.config["num_workers"])
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/trainer.py", line 797, in _make_workers
+    logdir=self.logdir)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/evaluation/worker_set.py", line 83, in __init__
+    lambda p, pid: (pid, p.observation_space, p.action_space)))
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/_private/client_mode_hook.py", line 62, in wrapper
+    return func(*args, **kwargs)
+ray.exceptions.RayActorError: The actor died because of an error raised in its creation task, [36mray::RolloutWorker.__init__()[39m (pid=146811, ip=172.16.1.17)
+TypeError: get_distribution_inputs_and_class() missing 1 required positional argument: 'obs_batch'
+
+During handling of the above exception, another exception occurred:
+
+[36mray::RolloutWorker.__init__()[39m (pid=146811, ip=172.16.1.17)
+  File "python/ray/_raylet.pyx", line 489, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 496, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 500, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 450, in ray._raylet.execute_task.function_executor
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/_private/function_manager.py", line 566, in actor_method_executor
+    return method(__ray_actor, *args, **kwargs)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 537, in __init__
+    policy_dict, policy_config)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/evaluation/rollout_worker.py", line 1196, in _build_policy_map
+    policy_map[name] = cls(obs_space, act_space, merged_conf)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/policy/policy_template.py", line 281, in __init__
+    stats_fn=stats_fn,
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/policy/policy.py", line 623, in _initialize_loss_from_dummy_batch
+    self._dummy_batch, explore=False)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/policy/torch_policy.py", line 262, in compute_actions_from_input_dict
+    seq_lens, explore, timestep)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/utils/threading.py", line 21, in wrapper
+    return func(self, *a, **k)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/policy/torch_policy.py", line 320, in _compute_action_helper
+    is_training=False)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/ddpg/ddpg_tf_policy.py", line 104, in get_distribution_inputs_and_class
+    dist_inputs = model.get_policy_output(model_out)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/ddpg/ddpg_torch_model.py", line 192, in get_policy_output
+    return self.policy_model(model_out)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/torch/nn/modules/container.py", line 117, in forward
+    input = module(input)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/akoulali/.conda/envs/ray/lib/python3.7/site-packages/ray/rllib/agents/ddpg/ddpg_torch_model.py", line 105, in forward
+    squashed = self.action_range * sigmoid_out + self.low_action
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+

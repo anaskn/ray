@@ -38,6 +38,7 @@ class TestTD3(unittest.TestCase):
         """Tests TD3's Exploration (w/ random actions for n timesteps)."""
         config = td3.TD3_DEFAULT_CONFIG.copy()
         config["num_workers"] = 0  # Run locally.
+        config["num_gpus"] = 1
         obs = np.array([0.0, 0.1, -0.1])
 
         # Test against all frameworks.
