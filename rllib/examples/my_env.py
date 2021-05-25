@@ -36,14 +36,14 @@ tf1, tf, tfv = try_import_tf()
 torch, nn = try_import_torch()
 
 def ret_lst(cpt):
-    string1 =  'data/listfile_evol'+str(cpt)+'.data' #_evol'+ , _pos'+
+    string1 =  'data4/listfile_evol_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data/nei_tab_pos'+str(cpt)+'.data'
+    string2 = 'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -85,7 +85,7 @@ class ContentCaching(gym.Env):
             nei_req.append(-99)
             cache_on_tab.append(0)
             neighbor_number_tab.append(0)
-            ttl_tab.append(np.zeros(20))
+            ttl_tab.append(np.zeros(40))
         
         self.caching_cap =  tab_cache 
         self.request = tab_request
@@ -114,7 +114,8 @@ class ContentCaching(gym.Env):
 
         for x in range(len(self.caching_cap)):
             lstt= []
-            lstt.append(self.request[i][x])
+
+            lstt.append(self.request[x][i])
 
             #init  caching_cap
             if i == 0 :
@@ -138,7 +139,7 @@ class ContentCaching(gym.Env):
                     cache = cache + 0
                 
                 else:
-                    cache = cache + (self.request[i][nei_tab[i][x][y]]/len(nei_tab[i][nei_tab[i][x][y]]) )
+                    cache = cache + (self.request[nei_tab[i][x][y]][i]/len(nei_tab[i][nei_tab[i][x][y]]) )
 
             if len(nei_tab[i][x])==0:
                 self.neigbors_request[x]= 0
@@ -185,28 +186,28 @@ class ContentCaching(gym.Env):
                 if len(nei_tab[i][y]) == 0:
                     cache1= cache1 + 0
                 else :
-                    cache1=cache1+(max(0,(self.request[i][nei_tab[i][zz][y]]-((1-action[nei_tab[i][zz][y]])*self.caching_cap[nei_tab[i][zz][y]]))/len(nei_tab[i][nei_tab[i][zz][y]])) )
+                    cache1=cache1+(max(0,(self.request[nei_tab[i][zz][y]][i]-((1-action[nei_tab[i][zz][y]])*self.caching_cap[nei_tab[i][zz][y]]))/len(nei_tab[i][nei_tab[i][zz][y]])) )
    
             if len(nei_tab[i][zz]) == 0 :
                 cache1 = 0
            
             
             f = R_c * max(0, (1-action[zz]) * self.caching_cap[zz] )  \
-               - C_u * ( max(0,  (self.request[i][zz]-(action[zz]*self.caching_cap[zz]))) + max(0, ( cache1 - (1-action[zz])*self.caching_cap[zz])/fact_k)  ) \
-                  - C_o * ( max(0, ((action[zz]*self.caching_cap[zz])-self.request[i][zz])/fact_k) + max (0, ((1-action[zz])*self.caching_cap[zz]) - cache1) )  
+               - C_u * ( max(0,  (self.request[zz][i]-(action[zz]*self.caching_cap[zz]))) + max(0, ( cache1 - (1-action[zz])*self.caching_cap[zz])/fact_k)  ) \
+                  - C_o * ( max(0, ((action[zz]*self.caching_cap[zz])-self.request[zz][i])/fact_k) + max (0, ((1-action[zz])*self.caching_cap[zz]) - cache1) )  
         
             unused_shared.append( float(max(0,(1-action[zz])*self.caching_cap[zz] - cache1  )))
-            unused_own.append( float(max(0, (action[zz]*self.caching_cap[zz])-self.request[i][zz] )))
+            unused_own.append( float(max(0, (action[zz]*self.caching_cap[zz])-self.request[zz][i] )))
             unsatisfied_shared.append(float(max(0,cache1-  (1-action[zz])*self.caching_cap[zz])))
-            unsatisfied_own.append(float(max(0,self.request[i][zz] - action[zz]*self.caching_cap[zz])))
+            unsatisfied_own.append(float(max(0,self.request[zz][i] - action[zz]*self.caching_cap[zz])))
 
             reward.append(f)
         #init  self.cache_on[x]
         for zz in range(len(action)):
-            self.cache_on[zz] = min(self.request[i][zz], ((action[zz]*100) * self.caching_cap[zz]) / 100.0)  \
+            self.cache_on[zz] = min(self.request[zz][i], ((action[zz]*100) * self.caching_cap[zz]) / 100.0)  \
                 + min(self.neigbors_request[zz], (((1-action[zz])*100) * self.caching_cap[zz]) / 100.0)
         
-        if self.epochs_num==19:
+        if self.epochs_num==39:
             done = True
         else:
             done = False

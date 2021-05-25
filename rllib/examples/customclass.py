@@ -52,14 +52,14 @@ def the_plot(analysis):
     plt.show()
 
 def ret_lst(cpt):
-    string1 =  'data/listfile_evol'+str(cpt)+'.data' #_evol'+ , _pos'+
+    string1 =  'data4/listfile_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data/nei_tab_pos'+str(cpt)+'.data'
+    string2 = 'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -101,8 +101,8 @@ class customExperimentClass():
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
-                        "nei_tab": ret_nei(5),
-                        "lst_tab": ret_lst(5),                        
+                        "nei_tab": ret_nei(11),
+                        "lst_tab": ret_lst(11),                        
 
                         },
                         "model": {
@@ -247,7 +247,7 @@ if __name__ == "__main__":
     print("------------------------------------------------------------------------------------")
     
     # Load saved
-    exper.load(checkpoint_path)
+    #exper.load(checkpoint_path)
     # Test loaded
     
     
