@@ -60,7 +60,7 @@ if __name__ == "__main__":
 	mean_algo_unsatisfied_shared =[]
 	mean_algo_unsatisfied_own = []
 	
-	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
+	variable = [1]#,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
 	ray.init()
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 		algo_unsatisfied_own.append(np.mean(mean_all_unsatisfied_own))
 
 
-		print("all_unused_shared[0] ", all_unused_shared[0])
+		print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
 
 		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
@@ -132,7 +132,9 @@ if __name__ == "__main__":
 		max_algo_unsatisfied_own.append(np.mean(all_unsatisfied_own))
 
 
-	times = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60]
+
+
+	times = [1]#,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60]
 	
 	
 	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'

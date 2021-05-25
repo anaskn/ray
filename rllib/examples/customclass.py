@@ -1,3 +1,8 @@
+import warnings
+warnings.filterwarnings("ignore")
+
+
+
 import argparse
 
 import ray
@@ -16,6 +21,8 @@ import numpy as np
 import os
 import pandas as pd
 import matplotlib.pyplot as plt 
+
+
 
 
 
@@ -114,7 +121,7 @@ class customExperimentClass():
 						"num_gpus_per_worker": num_gpus_per_worker,
                         "num_workers": num_workers, # parallelism
                         "lr": [1e-2],  # try different lrs
-                        #"num_workers": 2,  # parallelism
+                        "num_workers": 2,  # parallelism
                         "framework": "torch",# if args.torch else "tf",
                         "seed" : 0,
         }
@@ -143,6 +150,12 @@ class customExperimentClass():
                                 checkpoint_at_end=True)
         if algo == "appo":
             analysis = ray.tune.run(ppo.APPOTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
+                                checkpoint_at_end=True)
+        if algo == "ddpg":
+            analysis = ray.tune.run(ddpg.DDPGTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
+                                checkpoint_at_end=True)
+        if algo == "td3":
+            analysis = ray.tune.run(ddpg.TD3Trainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
 
         lr = analysis.get_best_config(metric='episode_reward_mean', mode="max")["lr"] 
@@ -193,6 +206,8 @@ class customExperimentClass():
             self.agent = impala.ImpalaTrainer(config=self.config_test)
         if algo == "appo":
             self.agent = ppo.APPOTrainer(config=self.config_test)
+        if algo == "td3":
+            self.agent = ddpg.TD3Trainer(config=self.config_test)
 
         self.agent.restore(path)
         env = self.agent.workers.local_worker().env
