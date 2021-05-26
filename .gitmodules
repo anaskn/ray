@@ -1,0 +1,3 @@
+[submodule "rllib/examples/gym_example"]
+	path = rllib/examples/gym_example
+	url = https://github.com/anaskn/gym_example.git

@@ -1,8 +1,7 @@
-import warnings
-warnings.filterwarnings("ignore")
 
-
-
+import gym
+import gym_example
+import pickle
 import argparse
 
 import ray
@@ -17,7 +16,6 @@ from ray.tune.registry import register_env
 
 
 from ray.tune import grid_search
-#from my_env import ContentCaching
 import pickle
 import time
 import numpy as np
@@ -28,6 +26,20 @@ from gym_example.envs.caching_env import Caching_v0
 
 
 
+
+def ret_lst(cpt):
+    string1 =  'data4/listfile_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
+    with open(string1, 'rb') as filehandle:
+    # read the data as binary data stream
+        lst = pickle.load(filehandle)
+    return lst
+
+def ret_nei(cpt):
+    string2 = 'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    with open(string2, 'rb') as filehandle:
+        # read the data as binary data stream
+        nei_tab = pickle.load(filehandle)
+    return nei_tab
 
 
 def the_plot(analysis):
@@ -59,8 +71,8 @@ def the_plot(analysis):
     plt.legend()
     
     # save file .pdf
-    plt.savefig('plot/Reward_'+args.algo+'.pdf')
-    #plt.show()
+    #plt.savefig('plot/Reward_'+args.algo+'.pdf')
+    plt.show()
 
 def ret_lst(cpt):
     string1 =  'data4/listfile_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
@@ -88,7 +100,7 @@ class customExperimentClass():
 
 
         self.config_train = {
-                        #"env": Caching_v0 ,#"caching-v0",
+                        "env": "caching-v0",
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
@@ -96,7 +108,7 @@ class customExperimentClass():
                         "lst_tab": ret_lst(cpt),
                         },
                         "num_gpus": num_gpus,
-						"num_gpus_per_worker": num_gpus_per_worker,
+                        "num_gpus_per_worker": num_gpus_per_worker,
                         "model": {
                             "fcnet_hiddens": grid_search( fcnet_hidd_lst),
                             "fcnet_activation": grid_search(fcnet_act_lst),
@@ -110,7 +122,7 @@ class customExperimentClass():
 
         
         self.config_test = {
-                        #"env": "caching-v0",
+                        "env": "caching-v0",
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
@@ -124,7 +136,7 @@ class customExperimentClass():
                             "vf_share_layers": False,#True,
                         },
                         "num_gpus": num_gpus,
-						"num_gpus_per_worker": num_gpus_per_worker,
+                        "num_gpus_per_worker": num_gpus_per_worker,
                         "num_workers": num_workers, # parallelism
                         "lr": [1e-2],  # try different lrs
                         "num_workers": 2,  # parallelism
@@ -138,10 +150,7 @@ class customExperimentClass():
                     "episode_reward_mean": stop_reward#args.stop_reward,
                     }
 
-        #self.env = gym.make("caching-v0", config=self.config_train) #ContentCaching #
-        select_env = "caching-v0"
-        register_env(select_env, lambda config: Caching_v0())
-    
+
     def train(self, algo):
         """
         Train an RLlib IMPALA agent using tune until any of the configured stopping criteria is met.
@@ -149,8 +158,12 @@ class customExperimentClass():
         :return: Return the path to the saved agent (checkpoint) and tune's ExperimentAnalysis object
             See https://docs.ray.io/en/latest/tune/api_docs/analysis.html#experimentanalysis-tune-experimentanalysis
         """
+
+        select_env = "caching-v0"
+        register_env(select_env, lambda config: Caching_v0(self.config_train["env_config"]))
+
         if algo == "ppo":
-            analysis = ray.tune.run(ppo.PPOTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
+            analysis = ray.tune.run(ppo.PPOTrainer, config=self.config_train,  local_dir=self.save_dir, stop=self.stop_criteria,
                                checkpoint_at_end=True)
         if algo == "impala":
             analysis = ray.tune.run(impala.ImpalaTrainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
@@ -167,6 +180,7 @@ class customExperimentClass():
         if algo == "td3":
             analysis = ray.tune.run(ddpg.TD3Trainer, config=self.config_train, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
+      
 
         lr = analysis.get_best_config(metric='episode_reward_mean', mode="max")["lr"] 
         fc_hid = analysis.get_best_config(metric='episode_reward_mean', mode="max")["model"]["fcnet_hiddens"] 
@@ -181,15 +195,6 @@ class customExperimentClass():
         print("Checkpoint path:", checkpoint_path)
         return checkpoint_path, analysis, lr, fc_hid, fc_act
 
-    def load(self, path):
-        """
-        Load a trained RLlib agent from the specified path. Call this before testing a trained agent.
-        :param path: Path pointing to the agent's saved checkpoint (only used for RLlib agents)
-        """
-        self.agent = ppo.PPOTrainer(config=self.config)
-        self.agent.restore(path)
-
-
 
     def test(self,algo, path, lr, fc_hid, fc_act):
 
@@ -201,10 +206,12 @@ class customExperimentClass():
         unsatisfied_own = []
 
         episode_reward = 0
+        
         self.config_test["num_workers"] = 0
         self.config_test["lr"] = lr
         self.config_test['model']["fcnet_hiddens"] = fc_hid
         self.config_test['model']["fcnet_activation"] = fc_act
+        
 
         if algo == "ppo":
             self.agent = ppo.PPOTrainer(config=self.config_test)
@@ -218,26 +225,18 @@ class customExperimentClass():
             self.agent = ppo.APPOTrainer(config=self.config_test)
         if algo == "td3":
             self.agent = ddpg.TD3Trainer(config=self.config_test)
-
+        
         self.agent.restore(path)
 
-        #env = self.agent.workers.local_worker().env
-        #env = self.env_class(self.env_config)
-        #env = ContentCaching(*self.config_train)
-        #env = self.config_train["env"]#env_config)
-        #env = self.env_class(3)
-        #env = ContentCaching
-        #env = self.env
-        #self.env = ContentCaching
-        #env = self.config_train["env"]
+        env = gym.make("caching-v0", config=self.config_test["env_config"])
         
      
-        obs = ContentCaching.reset()
+        obs = env.reset()
         done = False
 
         while not done:
             action = self.agent.compute_action(obs)
-            obs, reward, done, info = self.env.step(action)
+            obs, reward, done, info = env.step(action)
             episode_reward += reward
 
             unused_shared.append(info["unused_shared"])
@@ -249,47 +248,37 @@ class customExperimentClass():
 
 
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--epochs", type=int, default= 3)#50)
+    parser.add_argument("--epochs", type=int, default= 1)#50)
     parser.add_argument("--stop-timesteps", type=int, default=90000000)
     parser.add_argument("--stop-reward", type=float, default=0.001)
     parser.add_argument("--ttl_var", type=float, default=3)
     parser.add_argument("--cpt", type=float, default=1)
     parser.add_argument("--algo", type=str, default="ppo") 
 
-
     ray.shutdown()
     ray.init()
 
     args = parser.parse_args()
-    # Class instance
 
-    #print("num gpu = ",int(os.environ.get("RLLIB_NUM_GPUS", "1")) )
+    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,8,4], args.epochs)
     
-    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,8,4], args.epochs) # ttl_var, cpt, variable
 
-    # Train and save for 2 iterations
+
+    
     checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.algo)
-    the_plot(results)
-"""    
-    print("------------------------------------------------------------------------------------")
-    print("------------------------------------------------------------------------------------")
-    print("------------------------------------------------------------------------------------")
+    #the_plot(results)
+    print("gym.make successfully")
+
     
-    # Load saved
-    #exper.load(checkpoint_path)
-    # Test loaded
-    
-    
-    reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo,checkpoint_path, lr, fc_hid, fc_act)
-   
+    reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo ,checkpoint_path, lr, fc_hid, fc_act)
     print(" info[unused_shared] = ", unused_shared )
     print(" info[unused_own] = ", unused_own )
     print(" info[unsatisfied_shared] = ", unsatisfied_shared )
     print(" info[unsatisfied_own] = ", unsatisfied_own )
-    print(" reward = ", reward )"""
-    
+    print(" reward = ", reward )
+	

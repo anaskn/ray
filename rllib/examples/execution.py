@@ -7,7 +7,10 @@ import time
 import numpy as np
 import time 
 import matplotlib.pyplot as plt 
-from customclass import customExperimentClass
+from caching import customExperimentClass
+
+import torch
+torch.set_deterministic(True)
 
 if __name__ == "__main__":
 
