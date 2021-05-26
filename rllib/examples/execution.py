@@ -9,8 +9,8 @@ import time
 import matplotlib.pyplot as plt 
 from caching import customExperimentClass
 
-import torch
-torch.set_deterministic(True)
+#import torch
+#torch.set_deterministic(True)
 
 if __name__ == "__main__":
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 	mean_algo_unsatisfied_shared =[]
 	mean_algo_unsatisfied_own = []
 	
-	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
+	variable = [1]#,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
 	ray.init()
@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
 
 
-	times = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60]
+	times = [1]#,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60]
 	
 	
 	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
