@@ -22,25 +22,9 @@ import numpy as np
 import os
 import pandas as pd
 import matplotlib.pyplot as plt 
-from gym_example.envs.caching_env import Caching_v0
+from gym_example.envs.caching_env20 import Caching_v020
 import random
 
-
-
-
-def ret_lst(cpt):
-    string1 =  'data4/listfile_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
-    with open(string1, 'rb') as filehandle:
-    # read the data as binary data stream
-        lst = pickle.load(filehandle)
-    return lst
-
-def ret_nei(cpt):
-    string2 = 'data4/nei_tab_pos_40_'+str(cpt)+'.data'
-    with open(string2, 'rb') as filehandle:
-        # read the data as binary data stream
-        nei_tab = pickle.load(filehandle)
-    return nei_tab
 
 
 def the_plot(analysis):
@@ -101,7 +85,7 @@ class customExperimentClass():
 
 
         self.config_train = {
-                        "env": "caching-v0",
+                        "env": "caching-v020",
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
@@ -123,7 +107,7 @@ class customExperimentClass():
 
         
         self.config_test = {
-                        "env": "caching-v0",
+                        "env": "caching-v020",
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
@@ -160,8 +144,8 @@ class customExperimentClass():
             See https://docs.ray.io/en/latest/tune/api_docs/analysis.html#experimentanalysis-tune-experimentanalysis
         """
 
-        select_env = "caching-v0"
-        register_env(select_env, lambda config: Caching_v0(self.config_train["env_config"]))
+        select_env = "caching-v020"
+        register_env(select_env, lambda config: Caching_v020(self.config_train["env_config"]))
 
         if algo == "ppo":
             analysis = ray.tune.run(ppo.PPOTrainer, config=self.config_train,  local_dir=self.save_dir, stop=self.stop_criteria,
@@ -230,7 +214,7 @@ class customExperimentClass():
         
         self.agent.restore(path)
 
-        env = gym.make("caching-v0", config=self.config_test["env_config"])
+        env = gym.make("caching-v020", config=self.config_test["env_config"])
         
      
         obs = env.reset()
@@ -261,7 +245,7 @@ class customExperimentClass():
         episode_reward = 0
         
 
-        env = gym.make("caching-v0", config=self.config_test["env_config"])
+        env = gym.make("caching-v020", config=self.config_test["env_config"])
         
      
         obs = env.reset()
@@ -298,7 +282,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,8,4], args.epochs)
+    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,4], args.epochs)
     
 
 

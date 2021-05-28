@@ -7,7 +7,7 @@ import time
 import numpy as np
 import time 
 import matplotlib.pyplot as plt 
-from caching import customExperimentClass
+from caching20 import customExperimentClass
 
 #import torch
 #torch.set_deterministic(True)
@@ -33,17 +33,15 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	y=0
-	parameters = [[y, 8, 8, 4] , [8, y, 8, 4], [8, 8, y, 4], [8, 8, 8, y]]
+	parameters = [[y, 8, 4] , [8, y, 4], [8, 8, y]]
 
-	pdf_plot = ["rc", "co", "cu", "k"] #["R_c", "C_o", "C_u", "k"]
+	pdf_plot = ["rc", "c", "k"] #["R_c", "C_o", "C_u", "k"]
 	if args.para == "rc":
 		para = 0
-	if args.para == "co":
+	if args.para == "c":
 		para = 1
-	if args.para == "cu":
-		para = 2
 	if args.para == "k":
-		para = 3
+		para = 2
 
 	lst=0
 
@@ -63,7 +61,7 @@ if __name__ == "__main__":
 	mean_algo_unsatisfied_shared =[]
 	mean_algo_unsatisfied_own = []
 	
-	variable = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60] #[1,10,20,60,150,400,700,1000] #
+	variable = [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
 
 	ray.shutdown()
 	ray.init()
@@ -144,7 +142,7 @@ if __name__ == "__main__":
 
 
 
-	times = [1,2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60]
+	times = [2,4,6,8,10,12,14,16,18,20]
 	
 	
 	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
@@ -162,11 +160,11 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/unused_'+pdf_plot[para]+'_'+args.run+'.pdf') 
+	plt.savefig('plot/20ep_unused_'+pdf_plot[para]+'_'+args.run+'.pdf') 
 
 	#to stock data 
 	our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
-	with open('model/unused_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
+	with open('model/20ep_unused_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
@@ -191,10 +189,10 @@ if __name__ == "__main__":
 	
 	# save file .pdf
 	#"""
-	plt.savefig('plot/unsatisfied_'+pdf_plot[para]+'_'+args.run+'.pdf')
+	plt.savefig('plot/20ep_unsatisfied_'+pdf_plot[para]+'_'+args.run+'.pdf')
 	#to stock data 
 	our_file = [algo_unsatisfied_shared, algo_unsatisfied_own,max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
-	with open('model/unsatisfied_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
+	with open('model/20ep_unsatisfied_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
 	  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
