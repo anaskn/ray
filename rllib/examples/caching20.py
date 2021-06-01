@@ -25,6 +25,9 @@ import matplotlib.pyplot as plt
 from gym_example.envs.caching_env20 import Caching_v020
 import random
 
+import torch
+torch.set_deterministic(True)
+
 
 
 def the_plot(analysis):
@@ -275,27 +278,36 @@ if __name__ == "__main__":
     parser.add_argument("--stop-reward", type=float, default=0.001)
     parser.add_argument("--ttl_var", type=float, default=3)
     parser.add_argument("--cpt", type=float, default=1)
-    parser.add_argument("--algo", type=str, default="ppo") 
+    parser.add_argument("--run", type=str, default="ppo") 
+    parser.add_argument("--num_gpus_per_worker", type=float, default= 0)
+    parser.add_argument("--num_workers", type=int, default= 0)
+    parser.add_argument("--activation", nargs="+", default= ["relu"])
+    parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
+    parser.add_argument("--lr", type=float, nargs="+", default=[1e-2])
+    parser.add_argument("--gpu", type=float, default= 0)
+    parser.add_argument("--cpu", type=int, default= 8)
 
     ray.shutdown()
     ray.init()
 
     args = parser.parse_args()
 
-    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,4], args.epochs)
-    
-
-
-    
-    checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.algo)
+    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,4], \
+            fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers)                                  
+        
+    checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
     #the_plot(results)
     print("gym.make successfully")
 
     
-    reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.algo ,checkpoint_path, lr, fc_hid, fc_act)
-    print(" info[unused_shared] = ", unused_shared )
-    print(" info[unused_own] = ", unused_own )
-    print(" info[unsatisfied_shared] = ", unsatisfied_shared )
-    print(" info[unsatisfied_own] = ", unsatisfied_own )
-    print(" reward = ", reward )
+    reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act)
+    #print(" info[unused_shared] = ", unused_shared )
+    #print(" info[unused_own] = ", unused_own )
+    #print(" info[unsatisfied_shared] = ", unsatisfied_shared )
+    #print(" info[unsatisfied_own] = ", unsatisfied_own )
+    #print(" reward = ", reward )
+    
+    print(" best lr = ", lr)
+    print(" best hidden layer parameter = ", fc_hid)
+    print(" best fonction activation  = ", fc_act)
 	

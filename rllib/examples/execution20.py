@@ -36,10 +36,6 @@ if __name__ == "__main__":
 	ray.shutdown()
 	ray.init()
               
-	exper = customExperimentClass(args.ttl_var,   1, [8,8,4], \
-				fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
-
-	_, _, lr_best, fc_hid_best, fc_act_best = exper.train(args.run)
 
 	y=0
 	parameters = [[y, 8, 4] , [8, y, 4], [8, 8, y]]
@@ -66,10 +62,12 @@ if __name__ == "__main__":
 	max_algo_unsatisfied_shared =[]
 	max_algo_unsatisfied_own = []
 
-	mean_algo_unused_shared = []
-	mean_algo_unused_own = []
-	mean_algo_unsatisfied_shared =[]
-	mean_algo_unsatisfied_own = []
+	max_algo_unused_all = []
+	max_algo_unsatisfied_all = []
+	algo_unused_all =[]
+	algo_unsatisfied_all = []
+
+	algo_unused_all
 	
 	variable = [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
 
@@ -91,15 +89,15 @@ if __name__ == "__main__":
 			if args.run == "ppo" or args.run == "ddpg" or args.run == "appo" or args.run == "td3" or args.run == "a3c":
 				# Class instance
 				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
-											fcnet_hidd_lst =[fc_hid_best], fcnet_act_lst = [fc_act_best], lr_lst = [lr_best], stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+											fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
-				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid_best, fc_act_best)	
+				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)	
 			
 			if args.run == "random" :
 				# Class instance
 				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
-											fcnet_hidd_lst =fc_hid_best, fcnet_act_lst =fc_act_best, lr_lst =lr_best, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+											fcnet_hidd_lst =fc_hid, fcnet_act_lst =fc_act, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				# Load saved and Test loaded
 				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test_random(args.run)		
 
@@ -129,6 +127,10 @@ if __name__ == "__main__":
 		algo_unsatisfied_own.append(np.mean(mean_all_unsatisfied_own))
 
 
+		algo_unused_all.append(np.mean(mean_all_unused_shared)+np.mean(mean_all_unused_own))
+		algo_unsatisfied_all.append(np.mean(mean_all_unsatisfied_shared)+np.mean(mean_all_unsatisfied_own))
+
+
 		print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
 
 		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
@@ -148,15 +150,22 @@ if __name__ == "__main__":
 		max_algo_unsatisfied_shared.append(np.mean(all_unsatisfied_shared))
 		max_algo_unsatisfied_own.append(np.mean(all_unsatisfied_own))
 
+		max_algo_unused_all.append(np.mean(all_unused_shared)+np.mean(all_unused_own))
+		max_algo_unsatisfied_all.append(np.mean(all_unsatisfied_shared)+np.mean(all_unsatisfied_own))
+
 
 
 
 	times = [2,4,6,8,10,12,14,16,18,20]
 	
-	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
-	plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
-	plt.plot(times , max_algo_unused_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
-	plt.plot(times , max_algo_unused_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unused_{o}$') # unused own 
+	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
+	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
+	#plt.plot(times , max_algo_unused_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
+	#plt.plot(times , max_algo_unused_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unused_{o}$') # unused own 
+
+
+	plt.plot(times , algo_unused_all, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused$') #  unused shared  'ppo_$Unused$'
+	plt.plot(times , algo_unsatisfied_all, color='purple', linestyle='-', marker='+' ,label=args.run+'_$unsatisfied$') # unused own 
 
 	plt.ylabel('Unused caching resources', size= 8 ) #'$U_{nused}$' #Reward
 	plt.xlabel('$'+pdf_plot[para]+'$', size= 10) #'$'+pdf_plot[para]+'$'
@@ -181,10 +190,13 @@ if __name__ == "__main__":
 	print("End")
 
 	#plot only the last one 
-	plt.plot(times , algo_unsatisfied_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unsatisfied_{g}$') #  unused shared  
-	plt.plot(times , algo_unsatisfied_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied_{o}$') # unused own 
-	plt.plot(times , max_algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
-	plt.plot(times , max_algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unused_{o}$') # unused own 
+	#plt.plot(times , algo_unsatisfied_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unsatisfied_{g}$') #  unused shared  
+	#plt.plot(times , algo_unsatisfied_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied_{o}$') # unused own 
+	#plt.plot(times , max_algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
+	#plt.plot(times , max_algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unused_{o}$') # unused own 
+
+	plt.plot(times , max_algo_unused_all, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused$') #  unused shared  
+	plt.plot(times , max_algo_unsatisfied_all, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied$') # unused own 
 	
 	plt.ylabel('Unsatisfied caching demands', size= 8 ) 
 	plt.xlabel('$'+pdf_plot[para]+'$', size= 10)
