@@ -9,10 +9,11 @@ import time
 import matplotlib.pyplot as plt 
 from caching20 import customExperimentClass
 
-#import torch
-#torch.set_deterministic(True)
+import torch
+torch.set_deterministic(True)
 
 if __name__ == "__main__":
+
 
 
 	parser = argparse.ArgumentParser()
@@ -32,6 +33,14 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 
+	ray.shutdown()
+	ray.init()
+              
+	exper = customExperimentClass(args.ttl_var,   1, [8,8,4], \
+				fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+
+	_, _, lr_best, fc_hid_best, fc_act_best = exper.train(args.run)
+
 	y=0
 	parameters = [[y, 8, 4] , [8, y, 4], [8, 8, y]]
 
@@ -44,6 +53,7 @@ if __name__ == "__main__":
 		para = 2
 
 	lst=0
+
 
 	algo_reward_test = []
 	algo_unused_shared = []
@@ -63,8 +73,7 @@ if __name__ == "__main__":
 	
 	variable = [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
 
-	ray.shutdown()
-	ray.init()
+
 	for x in range(len(variable)):
 
 		parameters[para][para]= variable[x]
@@ -82,15 +91,15 @@ if __name__ == "__main__":
 			if args.run == "ppo" or args.run == "ddpg" or args.run == "appo" or args.run == "td3" or args.run == "a3c":
 				# Class instance
 				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
-											fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+											fcnet_hidd_lst =[fc_hid_best], fcnet_act_lst = [fc_act_best], lr_lst = [lr_best], stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
-				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)	
+				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid_best, fc_act_best)	
 			
 			if args.run == "random" :
 				# Class instance
 				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
-											fcnet_hidd_lst =args.layer, fcnet_act_lst =args.activation, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+											fcnet_hidd_lst =fc_hid_best, fcnet_act_lst =fc_act_best, lr_lst =lr_best, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				# Load saved and Test loaded
 				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test_random(args.run)		
 
@@ -143,7 +152,6 @@ if __name__ == "__main__":
 
 
 	times = [2,4,6,8,10,12,14,16,18,20]
-	
 	
 	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
