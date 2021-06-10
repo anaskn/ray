@@ -1,7 +1,7 @@
 import argparse
 import ray
 from ray import tune
-#from my_env import ContentCaching
+from my_env import ContentCaching
 import pickle
 import time
 import numpy as np
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable = [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
+	variable = [2]#,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		for cpt in range(1,11):
+		for cpt in range(1,6):#11):
 			
 
 			print("calcul of : "+pdf_plot[para], " for the value : ", variable[x]  )
@@ -108,17 +108,17 @@ if __name__ == "__main__":
 			all_unsatisfied_own.append(unsatisfied_own)
 
 
-		mean_all_unused_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
-			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
+		mean_all_unused_shared = [(a + b + c + d +e ) / 5 for a,b,c,d,e in zip(all_unused_shared[0], all_unused_shared[1], \
+			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4])]
 		
-		mean_all_unused_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
-			all_unused_own[3],all_unused_own[4], all_unused_own[5], all_unused_own[6], all_unused_own[7],all_unused_own[8], all_unused_own[9])]
+		mean_all_unused_own = [(a + b + c + d +e ) / 5 for a,b,c,d,e in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
+			all_unused_own[3],all_unused_own[4])]
 
-		mean_all_unsatisfied_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_shared[0], \
-			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4], all_unsatisfied_shared[5], all_unsatisfied_shared[6],all_unsatisfied_shared[7], all_unsatisfied_shared[8], all_unsatisfied_shared[9])]
+		mean_all_unsatisfied_shared = [(a + b + c + d+ e) / 5 for a,b,c,d,e  in zip(all_unsatisfied_shared[0], \
+			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4])]
 		
-		mean_all_unsatisfied_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
-			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
+		mean_all_unsatisfied_own = [(a + b + c + d+ e ) / 5 for a,b,c,d,e in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
+			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
 
 
 		algo_unused_shared.append(np.mean(mean_all_unused_shared))
@@ -133,17 +133,17 @@ if __name__ == "__main__":
 
 		print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
 
-		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
-			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
+		all_unused_shared = [max(a,b,c,d,e)  for a,b,c,d,e  in zip(all_unused_shared[0], all_unused_shared[1], \
+			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4])]
 		
-		all_unused_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
-			all_unused_own[3],all_unused_own[4], all_unused_own[5], all_unused_own[6], all_unused_own[7],all_unused_own[8], all_unused_own[9])]
+		all_unused_own = [max(a,b,c,d,e) for a,b,c,d,e  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
+			all_unused_own[3],all_unused_own[4])]
 
-		all_unsatisfied_shared = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_shared[0], \
-			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4], all_unsatisfied_shared[5], all_unsatisfied_shared[6],all_unsatisfied_shared[7], all_unsatisfied_shared[8], all_unsatisfied_shared[9])]
+		all_unsatisfied_shared = [max(a,b,c,d,e) for a,b,c,d,e  in zip(all_unsatisfied_shared[0], \
+			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4])]
 		
-		all_unsatisfied_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
-			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
+		all_unsatisfied_own = [max(a,b,c,d,e) for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
+			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
 
 		max_algo_unused_shared.append(np.mean(all_unused_shared))
 		max_algo_unused_own.append(np.mean(all_unused_own))
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
 
 
-	times = [2,4,6,8,10,12,14,16,18,20]
+	times = [2]#,4,6,8,10,12,14,16,18,20]
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
@@ -165,16 +165,16 @@ if __name__ == "__main__":
 
 
 	#plot avg of unused own + shared // unsatisfied own + shared
-	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_shared') #  unused shared  
-	plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_own') # unused own 
-	plt.plot(times , algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label=args.run+'_$Unsatisfied_shared') #  unused shared  'ppo_$Unused$'
-	plt.plot(times , algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label=args.run+'_$Unsatisfied_own') # unused own 
+	plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_shared_{g}$') #  unused shared  
+	plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_own_{o}$') # unused own 
+	plt.plot(times , algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label=args.run+'_$Unsatisfied_shared_{g}$') #  unused shared  'ppo_$Unused$'
+	plt.plot(times , algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label=args.run+'_$Unsatisfied_own_{o}$') # unused own 
 
 
 	#plt.plot(times , algo_unused_all, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unsatisfied_all, color='purple', linestyle='-', marker='+' ,label=args.run+'_$unsatisfied$') # unused own 
 
-	plt.ylabel('Resources', size= 8 ) #'$U_{nused}$' #Reward
+	plt.ylabel('Unused  caching resources', size= 8 ) #'$U_{nused}$' #Reward
 	plt.xlabel('$'+pdf_plot[para]+'$', size= 10) #'$'+pdf_plot[para]+'$'
 
 	plt.xticks(size = 7)
@@ -184,12 +184,11 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/20ep_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	plt.savefig('plot/20ep_unused_'+pdf_plot[para]+'_'+args.run+'.pdf') 
 
 	#to stock data 
-	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
-	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/20ep_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
+	with open('model/20ep_unused_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
@@ -202,19 +201,12 @@ if __name__ == "__main__":
 	#plt.plot(times , algo_unsatisfied_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied_{o}$') # unused own 
 	#plt.plot(times , max_algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , max_algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unused_{o}$') # unused own 
+	"""
 
-
-	#plot avg of unused own + shared // unsatisfied own + shared
-	plt.plot(times , max_algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label='max_'+args.run+'_$Unused_shared') #  unused shared  
-	plt.plot(times , max_algo_unused_own, color='purple', linestyle='-', marker='+' ,label='max_'+args.run+'_$Unused_own') # unused own 
-	plt.plot(times , max_algo_unsatisfied_shared, color='red', linestyle='dashed', marker='v' ,label='max_'+args.run+'_$Unsatisfied_shared') #  unused shared  'ppo_$Unused$'
-	plt.plot(times , max_algo_unsatisfied_own, color='blue', linestyle='--', marker='D' ,label='max_'+args.run+'_$Unsatisfied_own') # unused own
+	plt.plot(times , max_algo_unused_all, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused$') #  unused shared  
+	plt.plot(times , max_algo_unsatisfied_all, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied$') # unused own 
 	
-
-	#plt.plot(times , max_algo_unused_all, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused$') #  unused shared  
-	#plt.plot(times , max_algo_unsatisfied_all, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied$') # unused own 
-	
-	plt.ylabel('Resources', size= 8 ) 
+	plt.ylabel('Unsatisfied caching demands', size= 8 ) 
 	plt.xlabel('$'+pdf_plot[para]+'$', size= 10)
 
 	plt.xticks(size = 7)
@@ -225,12 +217,10 @@ if __name__ == "__main__":
 	
 	# save file .pdf
 	
-	plt.savefig('plot/20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unsatisfied
+	plt.savefig('plot/20ep_unsatisfied_'+pdf_plot[para]+'_'+args.run+'.pdf')
 	#to stock data 
-	#our_file = [algo_unsatisfied_shared, algo_unsatisfied_own,max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
-	our_file = [max_algo_unused_shared, max_algo_unused_own, max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
-
-	with open('model/20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unsatisfied 
+	our_file = [algo_unsatisfied_shared, algo_unsatisfied_own,max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
+	with open('model/20ep_unsatisfied_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle: 
 	  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
@@ -238,7 +228,7 @@ if __name__ == "__main__":
 	plt.close()
 	print("End")
 
-	
+	"""
 
 
 	

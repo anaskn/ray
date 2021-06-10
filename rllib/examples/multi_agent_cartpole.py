@@ -102,6 +102,7 @@ if __name__ == "__main__":
 
     results = tune.run("PPO", stop=stop, config=config, verbose=1)
 
-    if args.as_test:
-        check_learning_achieved(results, args.stop_reward)
+    #if args.as_test:
+    #    check_learning_achieved(results, args.stop_reward)
     ray.shutdown()
+    print("ennnd ")

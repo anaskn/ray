@@ -25,8 +25,8 @@ import matplotlib.pyplot as plt
 from gym_example.envs.caching_env20 import Caching_v020
 import random
 
-import torch
-torch.set_deterministic(True)
+#import torch
+#torch.set_deterministic(True)
 
 
 
@@ -63,14 +63,14 @@ def the_plot(analysis):
     plt.show()
 
 def ret_lst(cpt):
-    string1 =  'data4/listfile_40_'+str(cpt)+'.data' #_evol'+ , _pos'+
+    string1 =  'data6/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    string2 = 'data6/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -114,8 +114,8 @@ class customExperimentClass():
                         "env_config": {
                         "ttl_var": ttl_var,
                         "variable": variable,
-                        "nei_tab": ret_nei(11),
-                        "lst_tab": ret_lst(11),                        
+                        "nei_tab": ret_nei(11),#11
+                        "lst_tab": ret_lst(11), #11                       
 
                         },
                         "model": {
