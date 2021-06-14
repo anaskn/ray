@@ -178,9 +178,10 @@ class customExperimentClass():
         checkpoints = analysis.get_trial_checkpoints_paths(trial=analysis.get_best_trial('episode_reward_mean', mode = 'max'),
                                                            metric='episode_reward_mean')
         # retriev the checkpoint path; we only have a single checkpoint, so take the first one
-
+        print("checkpoints path:", len(checkpoints))
         checkpoint_path = checkpoints[0][0]
         print("Checkpoint path:", checkpoint_path)
+
         print("lr = ", lr, " fc hid = ", fc_hid, " fc_act = ", fc_act)
         return checkpoint_path, analysis, lr, fc_hid, fc_act
 

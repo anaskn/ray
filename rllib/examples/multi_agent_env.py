@@ -27,11 +27,11 @@ class caching_vM(MultiAgentEnv):
 
 
         #print("config ==== ", config)
-        self.ttl_var = config["ttl_var"]
-        self.variable = config["variable"]
+        self.ttl_var = config["env_config"]["ttl_var"]
+        self.variable = config["env_config"]["variable"]
 
-        self.neighbor = config["nei_tab"]
-        self.request = config["lst_tab"]
+        self.neighbor = config["env_config"]["nei_tab"]
+        self.request = config["env_config"]["lst_tab"]
 
         self.reward_cumul = []
 
@@ -163,15 +163,17 @@ class caching_vM(MultiAgentEnv):
                - C* ( max(0,  (self.request[zz][i]-(action[zz][0]*self.caching_cap[zz]))) + max(0, ( cache1 - (1-action[zz][0])*self.caching_cap[zz])/fact_k)  ) \
                   - C* ( max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k) + max (0, ((1-action[zz][0])*self.caching_cap[zz]) - cache1) )  
         
-            unused_shared.append( float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1  )))
-            unused_own.append( float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )))
-            unsatisfied_shared.append(float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])))
-            unsatisfied_own.append(float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz])))
+            #unused_shared.append( float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1  )))
+            #unused_own.append( float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )))
+            #unsatisfied_shared.append(float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])))
+            #unsatisfied_own.append(float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz])))
 
             rew[zz] = f
 
-            info[zz] = str( np.array([float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1 )), float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )), \
-                        float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])), float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz]))]) )
+            info[zz] = str( [float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1 )),\
+                        float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )), \
+                            float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])), \
+                                float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz]))]) 
 
             #print(" info[zz] = = ", info[zz])
 

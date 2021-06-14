@@ -231,9 +231,13 @@ def setup_and_train(config_model):
     register_env(env_name, env_creator)
 
     # Get environment obs, action spaces and number of agents
-    obs_space = single_env.observation_space
-    act_space = single_env.action_space
+    #obs_space = single_env.observation_space
+    #act_space = single_env.action_space
     num_agents = single_env.num_agents
+
+    
+    obs_space = gym.spaces.Box(low=0, high=100, shape=(3,), dtype=np.float32)
+    act_space = gym.spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32)
 
     print("obs_space = ", obs_space)
     print("act_space = ", act_space)
