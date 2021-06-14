@@ -78,7 +78,7 @@ def ret_nei(cpt):
 
 class customExperimentClass():
 
-    def __init__(self,ttl_var=3, cpt=1, variable=[8,8,8,8], stop_iters=1, fcnet_hidd_lst =[[64, 64, 64]],\
+    def __init__(self,algo, ttl_var=3, cpt=1, variable=[8,8,8,8], stop_iters=1, fcnet_hidd_lst =[[64, 64, 64]],\
                                      fcnet_act_lst =  ["swish"],lr_lst = [5e-3], stop_timesteps=990000000, stop_reward=0.00001,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
 
         #Get environment obs, action spaces and number of agents
@@ -132,7 +132,7 @@ class customExperimentClass():
                        "policy_mapping_fn": policy_mapping_fn,
                    },
                        }
-        if args.run == "ppo" or args.run == "appo":
+        if algo == "ppo" or algo == "appo":
           self.config["num_sgd_iter"]=10
 
        
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     #init
-    exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,4], \
+    exper = customExperimentClass(args.run , args.ttl_var, args.cpt, [8,8,4], \
             fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers)                                  
     
     #train model

@@ -88,7 +88,7 @@ if __name__ == "__main__":
  
 			if args.run == "ppo" or args.run == "ddpg" or args.run == "appo" or args.run == "td3" or args.run == "a3c" or args.run == "impala":
 				# Class instance
-				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
+				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
 											fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 			
 			if args.run == "random" :
 				# Class instance
-				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
+				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
 											fcnet_hidd_lst =fc_hid, fcnet_act_lst =fc_act, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				# Load saved and Test loaded
 				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test_random(args.run)		
