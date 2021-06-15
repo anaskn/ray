@@ -79,7 +79,7 @@ def ret_nei(cpt):
 class customExperimentClass():
 
     def __init__(self,algo, ttl_var=3, cpt=1, variable=[8,8,8,8], stop_iters=1, fcnet_hidd_lst =[[64, 64, 64]],\
-                                     fcnet_act_lst =  ["swish"],lr_lst = [5e-3], stop_timesteps=990000000, stop_reward=0.00001,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
+                                     fcnet_act_lst =  ["swish"],lr_lst = [5e-3], stop_timesteps=999990000, stop_reward=99999999,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
 
         #Get environment obs, action spaces and number of agents
         def gen_policy():

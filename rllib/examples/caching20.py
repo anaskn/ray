@@ -79,7 +79,7 @@ def ret_nei(cpt):
 class customExperimentClass():
 
     def __init__(self,ttl_var=3, cpt=1, variable=[8,8,8,8], stop_iters=5, fcnet_hidd_lst =[[64, 64, 64]],\
-                                     fcnet_act_lst =  ["swish", "relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=0.00001,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
+                                     fcnet_act_lst =  ["swish", "relu"],lr_lst = [1e-2], stop_timesteps=990000000, stop_reward=99999999,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
 
         #fcnet_hidd_lst =[[64, 64, 64]]
         #fcnet_act_lst =  ["relu", "sigmoid"]
