@@ -204,7 +204,7 @@ class customExperimentClass():
 
         episode_reward = 0
         
-        self.config["num_workers"] = 0
+        #self.config["num_workers"] = 0
         self.config["lr"] = lr
         self.config['model']["fcnet_hiddens"] = fc_hid
         self.config['model']["fcnet_activation"] = fc_act
