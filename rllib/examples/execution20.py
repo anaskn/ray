@@ -81,7 +81,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		for cpt in range(1,11):
+		for cpt in range(1,6):#11
 			
 
 			print("calcul of : "+pdf_plot[para], " for the value : ", variable[x]  )
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 			all_unsatisfied_own.append(unsatisfied_own)
 
 
-		mean_all_unused_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
+		"""		mean_all_unused_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
 		
 		mean_all_unused_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
@@ -119,6 +119,18 @@ if __name__ == "__main__":
 		
 		mean_all_unsatisfied_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
+		"""
+		mean_all_unused_shared = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unused_shared[0], all_unused_shared[1], \
+			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4] )]
+		
+		mean_all_unused_own = [(a + b + c + d + e) / 5 for a,b,c,d,e  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
+			all_unused_own[3],all_unused_own[4] )]
+
+		mean_all_unsatisfied_shared = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unsatisfied_shared[0], \
+			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4])]
+		
+		mean_all_unsatisfied_own = [(a + b + c + d + e ) / 10 for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
+			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
 
 
 		algo_unused_shared.append(np.mean(mean_all_unused_shared))
@@ -133,7 +145,7 @@ if __name__ == "__main__":
 
 		print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
 
-		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
+		"""		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
 		
 		all_unused_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
@@ -144,6 +156,20 @@ if __name__ == "__main__":
 		
 		all_unsatisfied_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
+		"""
+		all_unused_shared = [max(a,b,c,d,e)  for a,b,c,d,e  in zip(all_unused_shared[0], all_unused_shared[1], \
+			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4])]
+		
+		all_unused_own = [max(a,b,c,d,e) for a,b,c,d,e  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
+			all_unused_own[3],all_unused_own[4])]
+
+		all_unsatisfied_shared = [max(a,b,c,d,e) for a,b,c,d,e  in zip(all_unsatisfied_shared[0], \
+			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4] )]
+		
+		all_unsatisfied_own = [max(a,b,c,d,e) for a,b,c,d,e in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
+			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
+
+
 
 		max_algo_unused_shared.append(np.mean(all_unused_shared))
 		max_algo_unused_own.append(np.mean(all_unused_own))
