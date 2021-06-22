@@ -81,7 +81,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		for cpt in range(1,11):
+		for cpt in range(1,6):#11
 			
 
 			print("calcul of : "+pdf_plot[para], " for the value : ", variable[x]  )
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 		mean_all_unsatisfied_shared = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unsatisfied_shared[0], \
 			all_unsatisfied_shared[1], all_unsatisfied_shared[2], all_unsatisfied_shared[3],all_unsatisfied_shared[4])]
 		
-		mean_all_unsatisfied_own = [(a + b + c + d + e ) / 10 for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
+		mean_all_unsatisfied_own = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
 
 

@@ -183,3 +183,10 @@ def make_multi_agent(env_name_or_creator):
             return obs, rew, done, info
 
     return MultiEnv
+
+
+if __name__ == "__main__":
+
+    env = MultiEnv()
+    obs = env.reset()
+    print(obs)
