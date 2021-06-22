@@ -116,7 +116,10 @@ class customExperimentClass():
                        "vf_share_layers": False,#True,
                    },
                    "framework": "torch",# if args.torch else "tf",
-                   "num_workers": 4, # parallelism
+                   "framework": "torch",# if args.torch else "tf",
+                   "num_workers": num_workers, # parallelism
+                   "num_gpus":num_gpus,
+                   "num_gpus_per_worker":num_gpus_per_worker,
                    "seed" : 0,
 
                    "log_level": "WARN",
