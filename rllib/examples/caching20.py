@@ -25,6 +25,8 @@ import matplotlib.pyplot as plt
 from gym_example.envs.caching_env20 import Caching_v020
 import random
 
+
+
 #import torch
 #torch.set_deterministic(True)
 
@@ -288,10 +290,13 @@ if __name__ == "__main__":
     parser.add_argument("--gpu", type=float, default= 0)
     parser.add_argument("--cpu", type=int, default= 8)
 
+
+    args = parser.parse_args()
+
+
     ray.shutdown()
     ray.init()
 
-    args = parser.parse_args()
 
     exper = customExperimentClass(args.ttl_var, args.cpt, [8,8,4], \
             fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers)                                  

@@ -9,8 +9,7 @@ import time
 import matplotlib.pyplot as plt 
 from multi_agent_core import customExperimentClass
 
-#import torch
-#torch.set_deterministic(True)
+
 
 if __name__ == "__main__":
 
@@ -69,7 +68,7 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable = [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
+	variable = [2,6,10,14,18,20] #[1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -81,7 +80,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		for cpt in range(1,6):#11
+		for cpt in range(1,3):#11
 			
 
 			print("calcul of : "+pdf_plot[para], " for the value : ", variable[x]  )
@@ -120,7 +119,7 @@ if __name__ == "__main__":
 		mean_all_unsatisfied_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
 		"""
-
+		"""
 		mean_all_unused_shared = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4] )]
 		
@@ -132,6 +131,14 @@ if __name__ == "__main__":
 		
 		mean_all_unsatisfied_own = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
+		"""
+		mean_all_unused_shared = [(a + b  ) / 2 for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
+		
+		mean_all_unused_own = [(a + b ) / 2 for a,b  in zip(all_unused_own[0], all_unused_own[1] )]
+
+		mean_all_unsatisfied_shared = [(a + b ) / 2 for a,b  in zip(all_unsatisfied_shared[0], all_unsatisfied_shared[1])]
+		
+		mean_all_unsatisfied_own = [(a + b  ) / 2 for a,b  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1] )]
 
 
 		algo_unused_shared.append(np.mean(mean_all_unused_shared))
@@ -158,7 +165,7 @@ if __name__ == "__main__":
 		all_unsatisfied_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
 		"""
-
+		"""
 		all_unused_shared = [max(a,b,c,d,e)  for a,b,c,d,e  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4])]
 		
@@ -170,6 +177,14 @@ if __name__ == "__main__":
 		
 		all_unsatisfied_own = [max(a,b,c,d,e) for a,b,c,d,e in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
+		"""
+		all_unused_shared = [max(a,b)  for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
+		
+		all_unused_own = [max(a,b) for a,b  in zip(all_unused_own[0], all_unused_own[1] )]
+
+		all_unsatisfied_shared = [max(a,b) for a,b  in zip(all_unsatisfied_shared[0], all_unsatisfied_shared[1] )]
+		
+		all_unsatisfied_own = [max(a,b) for a,b in zip(all_unsatisfied_own[0], all_unsatisfied_own[1] )]
 
 		max_algo_unused_shared.append(np.mean(all_unused_shared))
 		max_algo_unused_own.append(np.mean(all_unused_own))
@@ -182,7 +197,7 @@ if __name__ == "__main__":
 
 
 
-	times = [2,4,6,8,10,12,14,16,18,20]
+	times = [2,6,10,14,18,20]
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 

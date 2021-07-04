@@ -26,7 +26,8 @@ import ast
 from ray.tune import grid_search
 import matplotlib.pyplot as plt 
 
-
+#import torch
+#torch.set_deterministic(True)
 
 
 def the_plot(analysis):
@@ -162,7 +163,7 @@ class customExperimentClass():
 
         if algo == "ppo":
             analysis = ray.tune.run(ppo.PPOTrainer, name="my_exp", config=self.config,  local_dir=self.save_dir, stop=self.stop_criteria,
-                               checkpoint_at_end=True)
+                               checkpoint_at_end=True )#, global_checkpoint_period=np.inf)
         if algo == "impala":
             analysis = ray.tune.run(impala.ImpalaTrainer, name="my_exp", config=self.config, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
@@ -174,7 +175,7 @@ class customExperimentClass():
                                 checkpoint_at_end=True)
         if algo == "ddpg":
             analysis = ray.tune.run(ddpg.DDPGTrainer,name="my_exp", config=self.config, local_dir=self.save_dir, stop=self.stop_criteria,
-                                checkpoint_at_end=True)
+                                checkpoint_at_end=True)#, global_checkpoint_period=np.inf)
         if algo == "td3":
             analysis = ray.tune.run(ddpg.TD3Trainer, name="my_exp", config=self.config, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
