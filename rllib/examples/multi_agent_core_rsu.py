@@ -64,19 +64,19 @@ def the_plot(analysis):
     plt.legend()
     
     # save file .pdf
-    plt.savefig('plot/Reward_multi_agent_'+args.run+'.pdf')
+    plt.savefig('plot/Reward_multi_agent_RSU'+args.run+'.pdf')
     plt.show()
 
 
 def ret_lst(cpt):
-    string1 =  'data6/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
+    string1 =  'data7/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data6/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    string2 = 'data7/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -98,7 +98,7 @@ class customExperimentClass():
 
         obs_space = gym.spaces.Box(low=0, high=100, shape=(3,), dtype=np.float32)#single_env.observation_space
         act_space = gym.spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32)#single_env.action_space
-        num_agents = 20#single_env.num_agents
+        num_agents = 22#single_env.num_agents
 
         # Create a policy mapping
         policy_graphs = {}

@@ -61,7 +61,7 @@ def the_plot(analysis):
     plt.legend()
     
     # save file .pdf
-    #plt.savefig('plot/Reward_'+args.algo+'.pdf')
+    plt.savefig('plot/Reward_'+args.algo+'.pdf')
     plt.show()
 
 def ret_lst(cpt):
@@ -302,11 +302,11 @@ if __name__ == "__main__":
             fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers)                                  
         
     checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
-    #the_plot(results)
+    the_plot(results)
     print("gym.make successfully")
 
     
-    reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act)
+    #reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act)
     #print(" info[unused_shared] = ", unused_shared )
     #print(" info[unused_own] = ", unused_own )
     #print(" info[unsatisfied_shared] = ", unsatisfied_shared )

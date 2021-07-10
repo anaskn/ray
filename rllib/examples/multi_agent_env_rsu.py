@@ -21,7 +21,7 @@ cpt = 1
 
 class caching_vM(MultiAgentEnv):
     def __init__(self, config, return_agent_actions = False, part=False):
-        self.num_agents = 20
+        self.num_agents = 22
         self.observation_space = gym.spaces.Box(low=0, high=100, shape=(3,), dtype=np.float32)
         self.action_space = gym.spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32)
 
@@ -43,7 +43,7 @@ class caching_vM(MultiAgentEnv):
         cache_on_tab = []
         neighbor_number_tab = []
         ttl_tab = []
-        for xx in range(20):
+        for xx in range(22):
             tab_cache.append(50) 
             tab_request.append(lst[xx])
             nei_req.append(-99)
