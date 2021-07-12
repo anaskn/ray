@@ -103,6 +103,7 @@ class caching_vM(MultiAgentEnv):
                     cache = cache + 0
                 
                 else:
+                    
                     cache = cache + (self.request[nei_tab[i][x][y]][i]/len(nei_tab[i][nei_tab[i][x][y]]) )
 
             if len(nei_tab[i][x])==0:

@@ -99,7 +99,7 @@ class caching_vM(MultiAgentEnv):
             cache = 0
             for y in range(len(nei_tab[i][x])):
 
-                if len(nei_tab[i][y]) == 0:
+                if len(nei_tab[i][y]) == 0 or len(nei_tab[i][nei_tab[i][x][y]]) == 0:
                     cache = cache + 0
                 
                 else:
@@ -150,7 +150,7 @@ class caching_vM(MultiAgentEnv):
             cache1 = 0
             for y in range(len(nei_tab[i][zz])):
 
-                if len(nei_tab[i][y]) == 0:
+                if len(nei_tab[i][y]) == 0 or len(nei_tab[i][nei_tab[i][zz][y]]) == 0:
                     cache1= cache1 + 0
                 else :
                     cache1=cache1+(max(0,(self.request[nei_tab[i][zz][y]][i]-((1-action[nei_tab[i][zz][y]][0])*self.caching_cap[nei_tab[i][zz][y]]))/len(nei_tab[i][nei_tab[i][zz][y]])) )

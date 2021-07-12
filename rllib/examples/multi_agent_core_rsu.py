@@ -16,7 +16,7 @@ from ray.rllib.agents import ddpg
 from ray.rllib.agents import a3c
 import ray.rllib.agents.impala as impala
 
-from multi_agent_env import caching_vM
+from multi_agent_env_rsu import caching_vM 
 
 from ray.rllib.agents import ppo
 
@@ -269,7 +269,7 @@ if __name__ == "__main__":
     parser.add_argument("--stop-timesteps", type=int, default=90000000)
     parser.add_argument("--stop-reward", type=float, default=99999999999)
     parser.add_argument("--ttl_var", type=float, default=3)
-    parser.add_argument("--cpt", type=float, default=1)
+    parser.add_argument("--cpt", type=int, default=1)
     parser.add_argument("--run", type=str, default="ppo") 
     parser.add_argument("--num_gpus_per_worker", type=float, default= 0)
     parser.add_argument("--num_workers", type=int, default= 0)
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     parser.add_argument("--cpu", type=int, default= 8)
 
     ray.shutdown()
-    ray.init()
+    ray.init()#num_gpus=0)
 
     args = parser.parse_args()
 
