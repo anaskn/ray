@@ -22,7 +22,7 @@ cpt = 1
 class caching_vM(MultiAgentEnv):
     def __init__(self, config, return_agent_actions = False, part=False):
         self.num_agents = 22
-        self.observation_space = gym.spaces.Box(low=0, high=100, shape=(3,), dtype=np.float32)
+        self.observation_space = gym.spaces.Box(low=0, high=200, shape=(3,), dtype=np.float32)
         self.action_space = gym.spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32)
 
 
@@ -43,8 +43,18 @@ class caching_vM(MultiAgentEnv):
         cache_on_tab = []
         neighbor_number_tab = []
         ttl_tab = []
-        for xx in range(22):
+
+        #vehicles
+        for xx in range(20):
             tab_cache.append(50) 
+            tab_request.append(lst[xx])
+            nei_req.append(-99)
+            cache_on_tab.append(0)
+            neighbor_number_tab.append(0)
+            ttl_tab.append(np.zeros(20))
+        #RSU
+        for xx in range(20,22):
+            tab_cache.append(200) 
             tab_request.append(lst[xx])
             nei_req.append(-99)
             cache_on_tab.append(0)
@@ -83,8 +93,14 @@ class caching_vM(MultiAgentEnv):
 
             #init  caching_cap
             if i == 0 :
-                self.caching_cap[x]=50
-                lstt.append(50)
+                if x==20 or x== 21:
+                    
+                    self.caching_cap[x]=200
+                    lstt.append(200)
+                else:
+                    self.caching_cap[x]=50
+                    lstt.append(50)
+
             else:           
                 if i-ttl_var > 0:
                     self.caching_cap[x] = self.caching_cap[x] + self.ttl[x][i-ttl_var]

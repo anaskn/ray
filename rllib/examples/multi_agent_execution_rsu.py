@@ -7,7 +7,7 @@ import time
 import numpy as np
 import time 
 import matplotlib.pyplot as plt 
-from multi_agent_core import customExperimentClass
+from multi_agent_core_rsu import customExperimentClass
 
 
 
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 	plt.xticks(size = 7)
 	plt.yticks(size = 7)
 
-	# Add a legend
+	# Add a legend 
 	plt.legend()
 	
 	# save file .pdf

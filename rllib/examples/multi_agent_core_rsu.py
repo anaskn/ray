@@ -96,7 +96,7 @@ class customExperimentClass():
         env_name = "caching_vM"
 
 
-        obs_space = gym.spaces.Box(low=0, high=100, shape=(3,), dtype=np.float32)#single_env.observation_space
+        obs_space = gym.spaces.Box(low=0, high=200, shape=(3,), dtype=np.float32)#single_env.observation_space
         act_space = gym.spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32)#single_env.action_space
         num_agents = 22#single_env.num_agents
 
@@ -214,6 +214,9 @@ class customExperimentClass():
         episode_reward = 0
         
         #self.config["num_workers"] = 0
+               
+        self.config["nei_tab"] = ret_nei(11)
+        self.config["lst_tab"] = ret_lst(11)
         self.config["lr"] = lr
         self.config['model']["fcnet_hiddens"] = fc_hid
         self.config['model']["fcnet_activation"] = fc_act
