@@ -62,6 +62,7 @@ def the_plot(analysis):
 
     # Add a legend
     plt.legend()
+    plt.grid()
     
     # save file .pdf
     plt.savefig('plot/Reward_multi_agent_RSU'+args.run+'.pdf')
@@ -69,14 +70,14 @@ def the_plot(analysis):
 
 
 def ret_lst(cpt):
-    string1 =  'data7/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
+    string1 =  'data8/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data7/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    string2 = 'data8/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -122,7 +123,6 @@ class customExperimentClass():
                        "vf_share_layers": False,#True,
                    },
                    "framework": "torch",# if args.torch else "tf",
-                   "framework": "torch",# if args.torch else "tf",
                    "num_workers": num_workers, # parallelism
                    "num_gpus":num_gpus,
                    "num_gpus_per_worker":num_gpus_per_worker,
@@ -133,7 +133,6 @@ class customExperimentClass():
                    "num_cpus_for_driver": 1,
                    "num_cpus_per_worker": 1,
 
-                  
                    "train_batch_size": 128,
                    "lr": grid_search(lr_lst),
                    "multiagent": {
@@ -215,8 +214,8 @@ class customExperimentClass():
         
         #self.config["num_workers"] = 0
                
-        self.config["nei_tab"] = ret_nei(11)
-        self.config["lst_tab"] = ret_lst(11)
+        #self.config["nei_tab"] = ret_nei(11)
+        #self.config["lst_tab"] = ret_lst(11)
         self.config["lr"] = lr
         self.config['model']["fcnet_hiddens"] = fc_hid
         self.config['model']["fcnet_activation"] = fc_act

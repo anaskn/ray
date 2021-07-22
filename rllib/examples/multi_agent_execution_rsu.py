@@ -13,7 +13,7 @@ from multi_agent_core_rsu import customExperimentClass
 
 if __name__ == "__main__":
 
-
+	#time.sleep(20000)
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--run", type=str, default="ppo")	
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable = [2,6,10,14,18,20] #[1,10,20,60,150,400,700,1000] #
+	variable = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] #2,6,10,14,18,20 [1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
 
 
-	times = [2,6,10,14,18,20]
+	times = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# 2,6,10,14,18,20
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
@@ -225,12 +225,12 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unused
+	plt.savefig('plot/z_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unused
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unused
+	with open('model/z_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unused
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
@@ -263,15 +263,16 @@ if __name__ == "__main__":
 
 	# Add a legend 
 	plt.legend()
+	plt.grid()
 	
 	# save file .pdf
 	
-	plt.savefig('plot/20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unsatisfied
+	plt.savefig('plot/z_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unsatisfied
 	#to stock data 
 	#our_file = [algo_unsatisfied_shared, algo_unsatisfied_own,max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
 	our_file = [max_algo_unused_shared, max_algo_unused_own, max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
 
-	with open('model/20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unsatisfied 
+	with open('model/z_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unsatisfied 
 	  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
