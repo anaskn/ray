@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] # [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
+	variable =  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -81,22 +81,51 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		for cpt in range(1,3):#11
+		for cpt in range(1,11):#11 ##3
 			
 
 			print("calcul of : "+pdf_plot[para], " for the value : ", variable[x]  )
  
 			if args.run == "ppo" or args.run == "ddpg" or args.run == "appo" or args.run == "td3" or args.run == "a3c" or args.run == "impala":
 				# Class instance
-				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
+				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
 											fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
-				checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
+				#checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
-				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)	
-			
+				#reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)	
+				all_in = exper.train(args.run)
+				checkpoint_path=all_in[0]
+				results= all_in[1]
+				lr= all_in[2]
+				fc_hid= all_in[3]
+				frame_work = all_in[4]
+				fc_act= all_in[5]
+
+
+				if args.run== 'ppo' or args.run== 'appo':
+					vf_loss=all_in[6]
+					kl_target= all_in[7]
+					clip=all_in[8]
+
+				if args.run== 'ddpg' or args.run== 'td3':
+					target_noise=all_in[6]
+					lea_starts=all_in[7]
+				if args.run== 'a2c' or args.run== 'a3c':
+					vf_loss=all_in[6]
+					grad=all_in[7]
+
+
+				if args.run== 'ppo'  or args.run== 'appo':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, frame_work, fc_act, vf_loss, kl_target, clip, -1, -1, -1)
+				if args.run== 'ddpg' or args.run== 'td3':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, frame_work, fc_act, -1,         -1,      -1,   target_noise, lea_starts, -1)
+				if args.run== 'a2c' or args.run== 'a3c':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, frame_work, fc_act, vf_loss,    -1,      -1,   -1, -1,  grad)
+
+	
 			if args.run == "random" :
 				# Class instance
-				exper = customExperimentClass(args.ttl_var, cpt, parameters[para], \
+				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
 											fcnet_hidd_lst =fc_hid, fcnet_act_lst =fc_act, lr_lst =args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
 				# Load saved and Test loaded
 				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test_random(args.run)		
@@ -107,8 +136,8 @@ if __name__ == "__main__":
 			all_unsatisfied_shared.append(unsatisfied_shared)
 			all_unsatisfied_own.append(unsatisfied_own)
 
-
-		"""		mean_all_unused_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
+	
+		mean_all_unused_shared = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
 		
 		mean_all_unused_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_own[0], all_unused_own[1], all_unused_own[2],\
@@ -119,6 +148,7 @@ if __name__ == "__main__":
 		
 		mean_all_unsatisfied_own = [(a + b + c + d + e + f + g + h + i + j) / 10 for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
+		
 		"""
 		mean_all_unused_shared = [(a + b  ) / 2 for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
 		
@@ -127,7 +157,7 @@ if __name__ == "__main__":
 		mean_all_unsatisfied_shared = [(a + b ) / 2 for a,b  in zip(all_unsatisfied_shared[0], all_unsatisfied_shared[1])]
 		
 		mean_all_unsatisfied_own = [(a + b  ) / 2 for a,b  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1] )]
-
+		"""
 
 		algo_unused_shared.append(np.mean(mean_all_unused_shared))
 		algo_unused_own.append(np.mean(mean_all_unused_own))
@@ -139,7 +169,7 @@ if __name__ == "__main__":
 		algo_unsatisfied_all.append(np.mean(mean_all_unsatisfied_shared)+np.mean(mean_all_unsatisfied_own))
 
 
-		print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
+		#print("mean_all_unused_shared[0] ", mean_all_unused_shared[0])
 
 		"""		all_unused_shared = [max(a,b,c,d,e,f,g,h,i,j)  for a,b,c,d,e,f,g,h,i,j  in zip(all_unused_shared[0], all_unused_shared[1], \
 			all_unused_shared[2], all_unused_shared[3], all_unused_shared[4],all_unused_shared[5], all_unused_shared[6], all_unused_shared[7], all_unused_shared[8], all_unused_shared[9])]
@@ -152,7 +182,7 @@ if __name__ == "__main__":
 		
 		all_unsatisfied_own = [max(a,b,c,d,e,f,g,h,i,j) for a,b,c,d,e,f,g,h,i,j  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4], all_unsatisfied_own[5], all_unsatisfied_own[6], all_unsatisfied_own[7], all_unsatisfied_own[8], all_unsatisfied_own[9])]
-		"""
+		
 		all_unused_shared = [max(a,b)  for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
 		
 		all_unused_own = [max(a,b) for a,b  in zip(all_unused_own[0], all_unused_own[1] )]
@@ -160,7 +190,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = [max(a,b) for a,b  in zip(all_unsatisfied_shared[0], all_unsatisfied_shared[1] )]
 		
 		all_unsatisfied_own = [max(a,b) for a,b in zip(all_unsatisfied_own[0], all_unsatisfied_own[1] )]
-
+		
 
 
 		max_algo_unused_shared.append(np.mean(all_unused_shared))
@@ -170,11 +200,11 @@ if __name__ == "__main__":
 
 		max_algo_unused_all.append(np.mean(all_unused_shared)+np.mean(all_unused_own))
 		max_algo_unsatisfied_all.append(np.mean(all_unsatisfied_shared)+np.mean(all_unsatisfied_own))
+		"""
 
 
 
-
-	times = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]#[2,4,6,8,10,12,14,16,18,20]
+	times = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20]#
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
@@ -200,21 +230,22 @@ if __name__ == "__main__":
 
 	# Add a legend
 	plt.legend()
+	plt.grid()
 
 	# save file .pdf
-	plt.savefig('plot/z_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	plt.savefig('plot/z3_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/z_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	with open('model/z3_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
 	#plt.show()
 	plt.close()
 	print("End")
-
+	"""
 	#plot only the last one 
 	#plt.plot(times , algo_unsatisfied_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unsatisfied_{g}$') #  unused shared  
 	#plt.plot(times , algo_unsatisfied_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied_{o}$') # unused own 
@@ -255,6 +286,7 @@ if __name__ == "__main__":
 	#plt.show()
 	plt.close()
 	print("End")
+	"""
 
 	
 

@@ -89,9 +89,39 @@ if __name__ == "__main__":
 				# Class instance
 				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
 											fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
-				checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
+				#checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
-				reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)	
+				#reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)
+				all_in = exper.train(args.run)
+				checkpoint_path=all_in[0]
+				results= all_in[1]
+				lr= all_in[2]
+				fc_hid= all_in[3]
+				fc_act= all_in[4]
+
+				if args.run== 'ppo' or args.run== 'appo':
+					vf_loss=all_in[5]
+					kl_target= all_in[6]
+					clip=all_in[7]
+
+				if args.run== 'ddpg' or args.run== 'td3':
+					target_noise=all_in[5]
+					lea_starts=all_in[6]
+
+				if args.run== 'a2c' or args.run== 'a3c':
+					vf_loss=all_in[5]
+					grad=all_in[6]
+				
+
+				#test model
+				#reward , unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act) 
+				if args.run== 'ppo' or args.run== 'appo':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act, vf_loss, kl_target, clip, -1, -1,-1)
+				if args.run== 'ddpg' or args.run== 'td3':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act, -1, -1, -1, target_noise, lea_starts, -1)
+				if args.run== 'a2c' or args.run== 'a3c':
+					reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run ,checkpoint_path, lr, fc_hid, fc_act, vf_loss,    -1,      -1,   -1, -1,  grad)
+
 			
 			if args.run == "random" :
 				# Class instance
@@ -132,6 +162,7 @@ if __name__ == "__main__":
 		mean_all_unsatisfied_own = [(a + b + c + d + e ) / 5 for a,b,c,d,e  in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
 		"""
+
 		mean_all_unused_shared = [(a + b  ) / 2 for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
 		
 		mean_all_unused_own = [(a + b ) / 2 for a,b  in zip(all_unused_own[0], all_unused_own[1] )]
@@ -177,7 +208,7 @@ if __name__ == "__main__":
 		
 		all_unsatisfied_own = [max(a,b,c,d,e) for a,b,c,d,e in zip(all_unsatisfied_own[0], all_unsatisfied_own[1],\
 			all_unsatisfied_own[2], all_unsatisfied_own[3], all_unsatisfied_own[4])]
-		"""
+		
 		all_unused_shared = [max(a,b)  for a,b  in zip(all_unused_shared[0], all_unused_shared[1] )]
 		
 		all_unused_own = [max(a,b) for a,b  in zip(all_unused_own[0], all_unused_own[1] )]
@@ -193,7 +224,7 @@ if __name__ == "__main__":
 
 		max_algo_unused_all.append(np.mean(all_unused_shared)+np.mean(all_unused_own))
 		max_algo_unsatisfied_all.append(np.mean(all_unsatisfied_shared)+np.mean(all_unsatisfied_own))
-
+		"""
 
 
 
@@ -225,12 +256,12 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/z_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	plt.savefig('plot/z4_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/z_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	with open('model/z4_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
@@ -238,6 +269,7 @@ if __name__ == "__main__":
 	plt.close()
 	print("End")
 
+	"""
 	#plot only the last one 
 	#plt.plot(times , algo_unsatisfied_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unsatisfied_{g}$') #  unused shared  
 	#plt.plot(times , algo_unsatisfied_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unsatisfied_{o}$') # unused own 
@@ -267,18 +299,19 @@ if __name__ == "__main__":
 	
 	# save file .pdf
 	
-	plt.savefig('plot/z_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unsatisfied
+	plt.savefig('plot/z3_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unsatisfied
 	#to stock data 
 	#our_file = [algo_unsatisfied_shared, algo_unsatisfied_own,max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
 	our_file = [max_algo_unused_shared, max_algo_unused_own, max_algo_unsatisfied_shared, max_algo_unsatisfied_own]
 
-	with open('model/z_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unsatisfied 
+	with open('model/z3_20ep_max_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unsatisfied 
 	  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
 	#plt.show()
 	plt.close()
 	print("End")
+	"""
 
 	
 
