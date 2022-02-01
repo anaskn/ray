@@ -175,9 +175,27 @@ class caching_vM(MultiAgentEnv):
                 cache1 = 0
            
             
-            f = R_c * max(0, (1-action[zz][0]) * self.caching_cap[zz] )  \
-               - C* ( max(0,  (self.request[zz][i]-(action[zz][0]*self.caching_cap[zz]))) + max(0, ( cache1 - (1-action[zz][0])*self.caching_cap[zz])/fact_k)  ) \
-                  - C* ( max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k) + max (0, ((1-action[zz][0])*self.caching_cap[zz]) - cache1) )  
+            #f = R_c * max(0, (1-action[zz][0]) * self.caching_cap[zz] )  \
+            #   - C* ( max(0,  (self.request[zz][i]-(action[zz][0]*self.caching_cap[zz]))) + max(0, ( cache1 - (1-action[zz][0])*self.caching_cap[zz])/fact_k)  ) \
+            #      - C* ( max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k) + max (0, ((1-action[zz][0])*self.caching_cap[zz]) - cache1) ) 
+            #selfish reward 1:
+            #f =  R_c * max(0, (1-action[zz][0]) * self.caching_cap[zz] )  \
+             #       -C *( max(0,  (self.request[zz][i]-(action[zz][0]*self.caching_cap[zz]))) + max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k)  )
+
+            #reward3
+            #eps=0.0001
+            #f = R_c * 1/(( max(0,  (self.request[zz][i]-(action[zz][0]*self.caching_cap[zz]))) \
+             #               + max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k) )+eps)
+
+            #selfish reward 4:
+            #f =  R_c * max(0, ((1-action[zz][0]) * self.caching_cap[zz]) /fact_k )  \
+             #       -C *( max(0,  self.request[zz][i]-(action[zz][0]*self.caching_cap[zz])) + \
+              #                  max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k)  )
+
+            #selfish reward 5:
+            f =  R_c * max(0, (1-action[zz][0]) * self.caching_cap[zz] )  \
+                    - (2 * C * ( max(0,  self.request[zz][i]-(action[zz][0]*self.caching_cap[zz])) + \
+                                max(0, ((action[zz][0]*self.caching_cap[zz])-self.request[zz][i])/fact_k)  ) )
             
             #unused_shared.append( float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1  )))
             #unused_own.append( float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )))
@@ -185,11 +203,11 @@ class caching_vM(MultiAgentEnv):
             #unsatisfied_own.append(float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz])))
 
             rew[zz] = f
-
-            info[zz] = str( [float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1 )),\
-                        float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )), \
-                            float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])), \
-                                float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz]))]) 
+            if zz<20: 
+                info[zz] = str( [float(max(0,(1-action[zz][0])*self.caching_cap[zz] - cache1 )),\
+                            float(max(0, (action[zz][0] * self.caching_cap[zz])-self.request[zz][i] )), \
+                                float(max(0,cache1 - (1-action[zz][0])*self.caching_cap[zz])), \
+                                    float(max(0,self.request[zz][i] - action[zz][0]*self.caching_cap[zz]))]) 
 
             #print(" info[zz] = = ", info[zz])
 

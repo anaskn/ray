@@ -70,7 +70,7 @@ def the_plot(analysis):
     plt.grid()
     
     # save file .pdf
-    plt.savefig('plot/Reward_multi_agent_'+args.run+'.pdf')
+    plt.savefig('plot/0_Reward_multi_agent_'+args.run+'.pdf')
 
     our_file = [sum_l]
     with open('model/Reward_multi_agent'+args.run+'.data', 'wb') as filehandle:   #unused
@@ -81,14 +81,14 @@ def the_plot(analysis):
 
 
 def ret_lst(cpt):
-    string1 =  'data6/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
+    string1 =  'data13/listfile_dist10_'+str(cpt)+'.data' #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data'
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data6/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    string2 = 'data13/nei_tab_pos_dist10_'+str(cpt)+'.data'   #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
@@ -97,7 +97,7 @@ def ret_nei(cpt):
 class customExperimentClass():
 
     def __init__(self,algo, ttl_var=3, cpt=1, variable=[8,8,8,8], stop_iters=1, fcnet_hidd_lst =[[64, 64, 64]],\
-                                     fcnet_act_lst =  ["swish"],lr_lst = [5e-3], stop_timesteps=999990000, stop_reward=99999999,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
+                                     fcnet_act_lst =  ["swish"],lr_lst = [1e-4], stop_timesteps=999990000, stop_reward=99999999,num_gpus=0, num_gpus_per_worker=0, num_workers=0):
 
         #Get environment obs, action spaces and number of agents
         def gen_policy():
@@ -261,7 +261,7 @@ class customExperimentClass():
 
         if algo == "ppo":
             analysis = ray.tune.run(ppo.PPOTrainer, name="my_exp", config=self.config,  local_dir=self.save_dir, stop=self.stop_criteria,
-                               checkpoint_at_end=True )#, global_checkpoint_period=np.inf)
+                               checkpoint_at_end=True )
         if algo == "impala":
             analysis = ray.tune.run(impala.ImpalaTrainer, name="my_exp", config=self.config, local_dir=self.save_dir, stop=self.stop_criteria,
                                 checkpoint_at_end=True)
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_workers", type=int, default= 0)
     parser.add_argument("--activation", nargs="+", default= ["relu"])
     parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
-    parser.add_argument("--lr", type=float, nargs="+", default=[1e-2])
+    parser.add_argument("--lr", type=float, nargs="+", default=[1e-4])
     parser.add_argument("--gpu", type=float, default= 0)
     parser.add_argument("--cpu", type=int, default= 8)
 
@@ -463,4 +463,6 @@ if __name__ == "__main__":
 
         print("best vf_loss =", vf_loss)
         print("clip grad ", grad)
+
+    print("eNNNNDddddd")
     

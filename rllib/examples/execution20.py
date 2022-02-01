@@ -69,8 +69,8 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable =  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
-
+	#variable =  [1,2,3,4,5,6,7,8,9,10]#,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20] #[1,10,20,60,150,400,700,1000] #
+	variable =  [11,12,13,14,15,16,17,18,19,20]
 
 	for x in range(len(variable)):
 
@@ -204,7 +204,8 @@ if __name__ == "__main__":
 
 
 
-	times = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20]#
+	#times = [1,2,3,4,5,6,7,8,9,10]#,11,12,13,14,15,16,17,18,19,20]# [2,4,6,8,10,12,14,16,18,20]#
+	times =  [11,12,13,14,15,16,17,18,19,20]
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
@@ -233,12 +234,12 @@ if __name__ == "__main__":
 	plt.grid()
 
 	# save file .pdf
-	plt.savefig('plot/z3_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	plt.savefig('plot/z3_20ep_resources_part2_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/z3_20ep_resources_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	with open('model/z3_20ep_resources_part2_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	

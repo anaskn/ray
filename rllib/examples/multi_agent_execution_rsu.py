@@ -15,16 +15,22 @@ if __name__ == "__main__":
 
 	#time.sleep(20000)
 
+
+	print("55555555555")
+	print("55555555555")
+	print("55555555555")
+	print("55555555555")
+
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--run", type=str, default="ppo")	
 	parser.add_argument("--epochs", type=int, default= 50)
 	parser.add_argument("--stop-timesteps", type=int, default=99999900)
 	parser.add_argument("--stop-reward", type=float, default=0.000001)
 	parser.add_argument("--para", type=str, default="rc")
-	parser.add_argument("--ttl_var", type=int, default=3)
+	parser.add_argument("--ttl_var", type=int, default=5)
 	parser.add_argument("--cpu", type=int, default= 8)
 	parser.add_argument("--gpu", type=float, default= 0)
-	parser.add_argument("--lr", type=float, nargs="+", default=[1e-2])
+	parser.add_argument("--lr", type=float, nargs="+", default=[1e-4])
 	parser.add_argument("--activation", nargs="+", default= ["relu"])
 	parser.add_argument('-l','--layer', type=int, nargs='+', required=True, action='append', help='layer list')
 	parser.add_argument("--num_gpus_per_worker", type=float, default= 0)
@@ -68,7 +74,7 @@ if __name__ == "__main__":
 
 	algo_unused_all
 	
-	variable = [1]#,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] #2,6,10,14,18,20 [1,10,20,60,150,400,700,1000] #
+	variable = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] #2,6,10,14,18,20 [1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -80,7 +86,7 @@ if __name__ == "__main__":
 		all_unsatisfied_shared = []
 		all_unsatisfied_own = []
 
-		num_agents = 22
+		num_agents = 24
 
 		for cpt in range(1,3):#11
 			
@@ -231,7 +237,7 @@ if __name__ == "__main__":
 
 
 
-	times = [1]#,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# 2,6,10,14,18,20
+	times = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]# 2,6,10,14,18,20
 	
 	#plt.plot(times , algo_unused_shared, color='orange', linestyle='dotted', marker='x' ,label=args.run+'_$Unused_{g}$') #  unused shared  'ppo_$Unused$'
 	#plt.plot(times , algo_unused_own, color='purple', linestyle='-', marker='+' ,label=args.run+'_$Unused_{o}$') # unused own 
@@ -259,16 +265,18 @@ if __name__ == "__main__":
 	plt.legend()
 	plt.grid()
 
+	
 	# save file .pdf
-	plt.savefig('plot/zhigh_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unused
+	plt.savefig('plot/reward_self5_data15_highpara_20ep_ttl5_'+pdf_plot[para]+'_'+args.run+'_RSU.pdf')  #unused
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/zhigh_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unused
+	with open('model/reward_self5_data15_highpara_20ep_ttl5_'+pdf_plot[para]+'_'+args.run+'_RSU.data', 'wb') as filehandle:   #unused
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	
+
 	#plt.show()
 	plt.close()
 	print("End")

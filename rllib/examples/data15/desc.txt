@@ -1,0 +1,3 @@
+
+vehicles and 4 rsu with demands         liste_request = [25, 30, 20, 15, 35, 13, 12, 11, 10, 10, 10, 10, 10, 10, 10] with large perimetre of rsu 300
+

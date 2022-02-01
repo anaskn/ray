@@ -14,6 +14,12 @@ from multi_agent_core import customExperimentClass
 if __name__ == "__main__":
 
 
+	print("55555555555")
+	print("55555555555")
+	print("55555555555")
+	print("55555555555")
+
+	
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--run", type=str, default="ppo")	
@@ -69,6 +75,7 @@ if __name__ == "__main__":
 	algo_unused_all
 	
 	variable = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] #[2,6,10,14,18,20] #[1,10,20,60,150,400,700,1000] #
+	#variable = [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200] #[2,6,10,14,18,20] #[1,10,20,60,150,400,700,1000] #
 
 
 	for x in range(len(variable)):
@@ -87,8 +94,9 @@ if __name__ == "__main__":
  
 			if args.run == "ppo" or args.run == "ddpg" or args.run == "appo" or args.run == "td3" or args.run == "a3c" or args.run == "impala":
 				# Class instance
-				exper = customExperimentClass(args.run, args.ttl_var, cpt, parameters[para], \
+				exper = customExperimentClass(args.run, 5, cpt, parameters[para], \
 											fcnet_hidd_lst = args.layer, fcnet_act_lst = args.activation, lr_lst = args.lr, stop_iters=args.epochs, num_gpus=args.gpu, num_gpus_per_worker=args.num_gpus_per_worker, num_workers=args.num_workers) 									
+				#args.ttl_var
 				#checkpoint_path, results, lr, fc_hid, fc_act = exper.train(args.run)
 				# Load saved and Test loaded
 				#reward, unused_shared ,unused_own, unsatisfied_shared, unsatisfied_own  = exper.test(args.run, checkpoint_path, lr, fc_hid, fc_act)
@@ -256,12 +264,14 @@ if __name__ == "__main__":
 	plt.legend()
 
 	# save file .pdf
-	plt.savefig('plot/z4_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	#plt.savefig('plot/data13_highpara_z4_20ep_multi_agent_ttl5_'+pdf_plot[para]+'_'+args.run+'.pdf')  #unused
+	plt.savefig('plot/reward_selfish5_data13_lowpara_z4_20ep_multi_agent_ttl5_'+pdf_plot[para]+'_'+args.run+'.pdf')  #new_reward
 
 	#to stock data 
 	#our_file = [algo_unused_shared,algo_unused_own,max_algo_unused_shared,max_algo_unused_own]
 	our_file = [algo_unused_shared, algo_unused_own, algo_unsatisfied_shared, algo_unsatisfied_own]
-	with open('model/z4_20ep_multi_agent_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	#with open('model/data13_highpara_z4_20ep_multi_agent_ttl5_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #unused
+	with open('model/reward_selfish5_data13_lowpara_z4_20ep_multi_agent_ttl5_'+pdf_plot[para]+'_'+args.run+'.data', 'wb') as filehandle:   #new_reward
 	#  # store the data as binary data stream
 		pickle.dump(our_file, filehandle)
 	

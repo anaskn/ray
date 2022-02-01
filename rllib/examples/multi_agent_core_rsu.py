@@ -79,14 +79,14 @@ def the_plot(analysis):
 
 
 def ret_lst(cpt):
-    string1 =  'data8/listfile_dist10_'+str(cpt)+'.data' #it was 8 #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data' 
+    string1 =  'data15/listfile_dist10_'+str(cpt)+'.data' #it was 8 #_evol'+ , _pos'+   #'data4/listfile_40_'+str(cpt)+'.data' 
     with open(string1, 'rb') as filehandle:
     # read the data as binary data stream
         lst = pickle.load(filehandle)
     return lst
 
 def ret_nei(cpt):
-    string2 = 'data8/nei_tab_pos_dist10_'+str(cpt)+'.data'   #it was 8  #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
+    string2 = 'data15/nei_tab_pos_dist10_'+str(cpt)+'.data'   #it was 8  #'data4/nei_tab_pos_40_'+str(cpt)+'.data'
     with open(string2, 'rb') as filehandle:
         # read the data as binary data stream
         nei_tab = pickle.load(filehandle)
